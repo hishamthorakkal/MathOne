@@ -8,6 +8,7 @@ import { logMistakes } from '../../engine/rewards';
 import { buildMock, MOCK_SHAPE, type MockQuestion } from '../../engine/session';
 import { getState, update } from '../../engine/store';
 import type { MockQuestionResult, MockResult, SkillId } from '../../engine/types';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { RichText } from '../../components/RichText';
 import { VisualView } from '../../components/Visuals';
 
@@ -80,6 +81,7 @@ function Exam({ kind, qs, onSubmit }: { kind: Kind; qs: MockQuestion[]; onSubmit
   const shownAt = useRef(Date.now());
   const started = useRef(Date.now());
   const submitted = useRef(false);
+  const [confirming, setConfirming] = useState(false);
 
   const stamp = () => {
     const now = Date.now();
@@ -148,6 +150,18 @@ function Exam({ kind, qs, onSubmit }: { kind: Kind; qs: MockQuestion[]; onSubmit
 
   return (
     <div className="screen arena exam">
+      <ConfirmDialog
+        open={confirming}
+        title="Submit your answers?"
+        message={`You answered ${answeredCount} of ${qs.length} questions.${answeredCount < qs.length ? ' Unanswered questions get no marks.' : ''}${flags.some(Boolean) ? ' You still have flagged questions.' : ''}`}
+        confirmLabel="Submit ✔"
+        cancelLabel="Go back"
+        onConfirm={() => {
+          setConfirming(false);
+          submit();
+        }}
+        onCancel={() => setConfirming(false)}
+      />
       <header className="exam-head">
         <b>OLYMPIAD ARENA</b>
         <span>
@@ -202,7 +216,7 @@ function Exam({ kind, qs, onSubmit }: { kind: Kind; qs: MockQuestion[]; onSubmit
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => window.confirm(`Submit? You answered ${answeredCount} of ${qs.length}.`) && submit()}
+            onClick={() => setConfirming(true)}
           >
             Submit ✔
           </button>
@@ -223,7 +237,7 @@ function Exam({ kind, qs, onSubmit }: { kind: Kind; qs: MockQuestion[]; onSubmit
       <button
         type="button"
         className="link"
-        onClick={() => window.confirm(`Submit now? You answered ${answeredCount} of ${qs.length}.`) && submit()}
+        onClick={() => setConfirming(true)}
       >
         Finish and submit
       </button>

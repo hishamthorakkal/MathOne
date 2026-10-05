@@ -496,6 +496,7 @@ function Mocks({ state }: { state: AppState }) {
 function SettingsTab({ state }: { state: AppState }) {
   const [name, setName] = useState(state.childName);
   const [date, setDate] = useState(getDateOverride() ?? '');
+  const [importError, setImportError] = useState(false);
   const s = state.settings;
   return (
     <div className="grid-2">
@@ -580,14 +581,17 @@ function SettingsTab({ state }: { state: AppState }) {
                   const data = JSON.parse(await f.text());
                   if (data.version !== 1) throw new Error('bad version');
                   replaceState({ ...initialState(), ...data });
+                  setImportError(false);
                 } catch {
-                  alert('That file is not a Mathosaur progress file.');
+                  setImportError(true);
                 }
+                e.target.value = '';
               }}
             />
           </label>
         </div>
       </section>
+      {importError && <p className="warn small span-2">That file is not a Mathosaur progress file.</p>}
       <ClearProgress state={state} />
       <section className="card span-2">
         <h2>Skills covered</h2>

@@ -17,6 +17,7 @@ import {
 import { buildCamp, buildMission, followUpFor, offlineMission, SEGMENTS, tomorrowPreview, type MissionItem } from '../../engine/session';
 import { getState, update, useAppState } from '../../engine/store';
 import type { BadgeId, Outcome, WorldId } from '../../engine/types';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Dino } from '../../components/Dino';
 import { QuestionPlayer, type WrongPick } from '../../components/QuestionPlayer';
 import { useCompanion } from '../../components/useCompanion';
@@ -137,9 +138,8 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
     setStage(list[ni].segment !== item.segment ? 'banner' : 'question');
   };
 
-  const quit = () => {
-    if (window.confirm('Leave this mission? Your stars so far are saved.')) nav('/');
-  };
+  const [leaving, setLeaving] = useState(false);
+  const quit = () => setLeaving(true);
 
   if (stage === 'intro') {
     return (
@@ -191,6 +191,16 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
   const bossItems = items.filter((i) => i.segment === 'boss').length;
   return (
     <div className="screen mission" style={{ ['--world' as string]: world.color }}>
+      <ConfirmDialog
+        open={leaving}
+        title="Leave the adventure? 🦖"
+        message="Your stars so far are saved. You can start a new adventure later."
+        confirmLabel="Leave"
+        cancelLabel="Keep playing"
+        safeDefault
+        onConfirm={() => nav('/')}
+        onCancel={() => setLeaving(false)}
+      />
       <div className="mission-bar">
         <button type="button" className="btn btn-ghost" onClick={quit} aria-label="Leave mission">
           ✕
