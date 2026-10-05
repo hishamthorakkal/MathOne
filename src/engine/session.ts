@@ -217,22 +217,24 @@ export interface MockQuestion {
   marks: number;
 }
 
+/** Shape of the IMO Class 2 paper, as in the official sample paper (50 questions, 3 sections). */
 export const MOCK_SHAPE = {
-  mini: { minutes: 15, sections: { 'Logical Reasoning': 4, 'Mathematical Reasoning': 4, 'Everyday Mathematics': 3, "Achievers' Section": 1 } },
-  full: { minutes: 60, sections: { 'Logical Reasoning': 10, 'Mathematical Reasoning': 10, 'Everyday Mathematics': 10, "Achievers' Section": 5 } },
+  mini: { minutes: 15, sections: { 'Logical Reasoning': 6, 'Mathematical Reasoning': 6, 'Everyday Mathematics': 3 } },
+  full: { minutes: 60, sections: { 'Logical Reasoning': 20, 'Mathematical Reasoning': 20, 'Everyday Mathematics': 10 } },
 } as const;
 
 export function buildMock(kind: 'mini' | 'full'): MockQuestion[] {
   const out: MockQuestion[] = [];
   for (const [section, count] of Object.entries(MOCK_SHAPE[kind].sections) as [Section, number][]) {
-    const pool = SKILLS.filter((s) => (section === "Achievers' Section" ? s.reasoning : s.section === section)).map((s) => s.id);
+    const pool = SKILLS.filter((s) => s.section === section).map((s) => s.id);
     const order = shuffle(pool);
     for (let i = 0; i < count; i++) {
       const skill = order[i % order.length];
-      const diff = (section === "Achievers' Section" ? pick([4, 5]) : pick([2, 3, 3, 4])) as Difficulty;
+      // Like the real paper: mostly moderate, with a few harder questions at the end of each section.
+      const diff = (i >= count * 0.8 ? pick([4, 5]) : pick([2, 3, 3, 4])) as Difficulty;
       let q = generate(skill, diff, { arena: true });
-      for (let k = 0; k < 6 && out.some((o) => o.q.prompt === q.prompt); k++) q = generate(skill, diff, { arena: true });
-      out.push({ q, section, marks: section === "Achievers' Section" ? 2 : 1 });
+      for (let k = 0; k < 6 && out.some((o) => o.q.prompt === q.prompt && o.q.answer === q.answer); k++) q = generate(skill, diff, { arena: true });
+      out.push({ q, section, marks: 1 });
     }
   }
   return out;

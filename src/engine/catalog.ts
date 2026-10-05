@@ -1,6 +1,7 @@
 import type { BadgeId, DinoId, SkillId, WorldId } from './types';
 
-export type Section = 'Logical Reasoning' | 'Mathematical Reasoning' | 'Everyday Mathematics' | "Achievers' Section";
+/** Sections of the IMO Class 2 paper (see the official sample paper). */
+export type Section = 'Logical Reasoning' | 'Mathematical Reasoning' | 'Everyday Mathematics';
 
 export interface SkillInfo {
   id: SkillId;
@@ -12,7 +13,8 @@ export interface SkillInfo {
 }
 
 export const SKILLS: SkillInfo[] = [
-  { id: 'place_value', name: 'Place Value', world: 'number_jungle', section: 'Mathematical Reasoning' },
+  { id: 'number_names', name: 'Number Names', world: 'number_jungle', section: 'Mathematical Reasoning' },
+  { id: 'place_value', name: 'Place Value & Abacus', world: 'number_jungle', section: 'Mathematical Reasoning' },
   { id: 'compare_numbers', name: 'Greater & Smaller', world: 'number_jungle', section: 'Mathematical Reasoning' },
   { id: 'ordering', name: 'Number Order', world: 'number_jungle', section: 'Mathematical Reasoning' },
   { id: 'number_neighbours', name: 'Missing Numbers', world: 'number_jungle', section: 'Mathematical Reasoning' },
@@ -31,16 +33,18 @@ export const SKILLS: SkillInfo[] = [
   { id: 'equal_sharing', name: 'Equal Sharing', world: 'dino_nest', section: 'Everyday Mathematics' },
 
   { id: 'shapes_2d', name: '2D Shapes', world: 'shape_caves', section: 'Mathematical Reasoning' },
-  { id: 'solids_3d', name: '3D Solids', world: 'shape_caves', section: 'Everyday Mathematics' },
+  { id: 'solids_3d', name: '3D Solids', world: 'shape_caves', section: 'Mathematical Reasoning' },
   { id: 'count_shapes', name: 'Counting Shapes', world: 'shape_caves', section: 'Logical Reasoning', reasoning: true },
+  { id: 'symmetry', name: 'Fold & Symmetry', world: 'shape_caves', section: 'Logical Reasoning', reasoning: true },
 
-  { id: 'clock_reading', name: 'Clock Reading', world: 'time_mountain', section: 'Everyday Mathematics' },
-  { id: 'calendar', name: 'Calendar', world: 'time_mountain', section: 'Everyday Mathematics' },
+  { id: 'clock_reading', name: 'Clock Reading', world: 'time_mountain', section: 'Mathematical Reasoning' },
+  { id: 'calendar', name: 'Calendar', world: 'time_mountain', section: 'Mathematical Reasoning' },
   { id: 'duration', name: 'Time Duration', world: 'time_mountain', section: 'Everyday Mathematics' },
 
   { id: 'money_total', name: 'Money', world: 'treasure_market', section: 'Everyday Mathematics' },
   { id: 'money_change', name: 'Money Change', world: 'treasure_market', section: 'Everyday Mathematics' },
-  { id: 'measurement', name: 'Measurement', world: 'treasure_market', section: 'Everyday Mathematics' },
+  { id: 'measurement', name: 'Length, Weight & Capacity', world: 'treasure_market', section: 'Everyday Mathematics' },
+  { id: 'temperature', name: 'Temperature', world: 'treasure_market', section: 'Mathematical Reasoning' },
 
   { id: 'patterns', name: 'Patterns', world: 'puzzle_forest', section: 'Logical Reasoning', reasoning: true },
   { id: 'odd_one_out', name: 'Odd One Out', world: 'puzzle_forest', section: 'Logical Reasoning', reasoning: true },
@@ -48,9 +52,11 @@ export const SKILLS: SkillInfo[] = [
   { id: 'coding_decoding', name: 'Coding-Decoding', world: 'puzzle_forest', section: 'Logical Reasoning', reasoning: true },
   { id: 'ranking', name: 'Ranking', world: 'puzzle_forest', section: 'Logical Reasoning', reasoning: true },
   { id: 'data_pictograph', name: 'Data & Pictographs', world: 'puzzle_forest', section: 'Everyday Mathematics' },
+  { id: 'spatial', name: 'Directions & Positions', world: 'puzzle_forest', section: 'Logical Reasoning', reasoning: true },
+  { id: 'venn', name: 'Grouping & Venn', world: 'puzzle_forest', section: 'Logical Reasoning', reasoning: true },
 
-  { id: 'clue_numbers', name: 'Clue Puzzles', world: 'olympiad_castle', section: "Achievers' Section", reasoning: true },
-  { id: 'multi_step', name: 'Multi-step Problems', world: 'olympiad_castle', section: "Achievers' Section", reasoning: true },
+  { id: 'clue_numbers', name: 'Clue Puzzles', world: 'olympiad_castle', section: 'Logical Reasoning', reasoning: true },
+  { id: 'multi_step', name: 'Multi-step Problems', world: 'olympiad_castle', section: 'Everyday Mathematics', reasoning: true },
 ];
 
 export const SKILL: Record<SkillId, SkillInfo> = Object.fromEntries(SKILLS.map((s) => [s.id, s])) as Record<

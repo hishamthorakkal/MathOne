@@ -8,7 +8,7 @@ export const initialState = (): AppState => ({
   version: 1,
   childName: '',
   createdAt: today(),
-  settings: { sound: true, unlockAll: false, arena: 'auto' },
+  settings: { sound: true, autoRead: true, unlockAll: false, arena: 'auto' },
   stars: 0,
   eggs: 0,
   skills: {},
@@ -25,12 +25,17 @@ export const initialState = (): AppState => ({
   bosses: [],
   mocks: [],
   strategies: {},
+  mistakes: [],
 });
 
 function load(): AppState {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...initialState(), ...JSON.parse(raw) };
+    if (raw) {
+      const saved = JSON.parse(raw);
+      const base = initialState();
+      return { ...base, ...saved, settings: { ...base.settings, ...saved.settings } };
+    }
   } catch {
     /* corrupted or unavailable storage – start fresh */
   }

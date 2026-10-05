@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { play } from '../../engine/audio';
 import { shuffle } from '../../engine/generators';
 import { Dino } from '../Dino';
@@ -416,6 +416,56 @@ export function PickGame({ q, onAnswer, locked }: GameProps) {
           {o}
         </button>
       ))}
+    </div>
+  );
+}
+
+// ---------- Dino Calculator: type the answer ----------
+export function NumberPad({ q, onAnswer, locked }: GameProps) {
+  const [value, setValueState] = useState('');
+  const current = useRef(''); // always the latest value, even between renders
+  const setValue = (v: string) => {
+    current.current = v;
+    setValueState(v);
+  };
+  const maxLen = Math.max(3, q.answer.length + 1);
+  const press = (k: string) => {
+    if (locked) return;
+    play('tap');
+    const v = current.current;
+    if (k === '⌫') setValue(v.slice(0, -1));
+    else if (v.length < maxLen) setValue((v + k).replace(/^0+(?=\d)/, ''));
+  };
+  const check = () => {
+    const v = current.current;
+    if (locked || !v) return;
+    onAnswer(v);
+    if (v !== q.answer) setTimeout(() => setValue(''), 600);
+  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (/^\d$/.test(e.key)) press(e.key);
+      else if (e.key === 'Backspace') press('⌫');
+      else if (e.key === 'Enter') check();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+  return (
+    <div className="pad-scene">
+      <div className={`pad-display ${locked ? 'pad-right' : ''}`} aria-live="polite" aria-label="Your answer">
+        {value || <span className="pad-placeholder">?</span>}
+      </div>
+      <div className="pad-keys">
+        {['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0'].map((k) => (
+          <button type="button" key={k} className={`pad-key ${k === '⌫' ? 'pad-back' : ''}`} onClick={() => press(k)} disabled={locked} aria-label={k === '⌫' ? 'Delete' : k}>
+            {k}
+          </button>
+        ))}
+        <button type="button" className="pad-key pad-ok" onClick={check} disabled={locked || !value}>
+          ✓
+        </button>
+      </div>
     </div>
   );
 }

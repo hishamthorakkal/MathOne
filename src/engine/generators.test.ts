@@ -84,3 +84,49 @@ describe('maths and language correctness', () => {
       }
   });
 });
+
+describe('IMO Class 2 syllabus alignment', () => {
+  const CORE: Parameters<typeof generate>[0][] = [
+    'number_names', 'place_value', 'compare_numbers', 'ordering', 'number_neighbours', 'skip_counting', 'even_odd',
+    'addition_no_carry', 'addition_carry', 'subtraction_no_borrow', 'subtraction_borrow', 'missing_number_ops',
+    'add_sub_word', 'repeated_addition', 'multiplication', 'equal_sharing',
+  ];
+  it('keeps levels 1–4 within numbers up to 100 (three digits only at level 5)', () => {
+    for (const skill of CORE)
+      for (const d of [1, 2, 3, 4] as Difficulty[])
+        for (let i = 0; i < 200; i++) {
+          const q = generate(skill, d);
+          const nums = [q.prompt, q.answer, ...(q.data?.type === 'lava' ? q.data.stones.map(String) : []), ...(q.data?.type === 'match' ? q.data.pairs.flatMap((p) => [p.left, p.right]) : [])]
+            .join(' ')
+            .match(/\d+/g)?.map(Number) ?? [];
+          expect(Math.max(0, ...nums), `${skill} d${d}: ${q.prompt} -> ${q.answer}`).toBeLessThanOrEqual(100);
+        }
+  });
+
+  it('builds a 50-question mock like the sample paper', async () => {
+    const { buildMock } = await import('./session');
+    const m = buildMock('full');
+    expect(m).toHaveLength(50);
+    expect(m.filter((x) => x.section === 'Logical Reasoning')).toHaveLength(20);
+    expect(m.filter((x) => x.section === 'Mathematical Reasoning')).toHaveLength(20);
+    expect(m.filter((x) => x.section === 'Everyday Mathematics')).toHaveLength(10);
+    for (const x of m) expect(x.q.options).toContain(x.q.answer);
+  });
+});
+
+describe('anti-elimination option swap', () => {
+  it('never swaps in the answer, a duplicate, or a second correct answer', async () => {
+    const { replacementOption } = await import('./misconceptions');
+    for (const { id } of SKILLS)
+      for (const d of LEVELS)
+        for (let i = 0; i < 40; i++) {
+          const q = generate(id, d);
+          if (!q.options.length) continue;
+          const r = replacementOption(q, q.options);
+          if (r == null) continue;
+          expect(r).not.toBe(q.answer);
+          expect(q.options).not.toContain(r);
+          expect(r, `${id}: ${r}`).not.toMatch(/\b(1[3-9]|2\d) o'clock|\b0 o'clock|^0:|\b1[3-9]:\d\d/);
+        }
+  });
+});

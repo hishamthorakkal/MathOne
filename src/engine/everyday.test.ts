@@ -37,7 +37,7 @@ describe('every day until the Olympiad', () => {
       buildCamp(state); // must not throw
       report.push(`${day} P${phaseOf(day).phase} ${plan.world}${plan.boss ? ' BOSS' : ''}${plan.light ? ' LIGHT' : ''}`);
     }
-    expect(buildMock('full')).toHaveLength(35);
+    expect(buildMock('full')).toHaveLength(50);
     console.log(report.join('\n'));
     console.log('crystals:', state.crystals.join(', '));
     vi.unstubAllGlobals();

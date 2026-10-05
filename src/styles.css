@@ -2319,3 +2319,311 @@ mark.clue {
     transition: none !important;
   }
 }
+
+/* ---------- Dino Calculator ---------- */
+.pad-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pad-display {
+  min-width: 180px;
+  min-height: 72px;
+  padding: 6px 20px;
+  border-radius: 18px;
+  border: 4px solid var(--line);
+  background: #fffdf5;
+  font-size: 2.6rem;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pad-right {
+  border-color: #2e9d57;
+  background: #e8f8ec;
+}
+
+.pad-placeholder {
+  color: #c9bfa9;
+}
+
+.pad-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 76px);
+  gap: 10px;
+}
+
+.pad-key {
+  min-height: 64px;
+  border-radius: 16px;
+  border: 3px solid var(--line);
+  background: #fff;
+  font-size: 1.7rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--line);
+}
+
+.pad-key:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.pad-back {
+  background: #fff4ec;
+}
+
+.pad-ok {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #fff;
+}
+
+/* ---------- new visuals ---------- */
+.objects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.objects-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  max-width: 260px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  background: #fff8e6;
+}
+
+.objects-op {
+  font-weight: 800;
+  margin: 0 8px;
+  color: var(--muted);
+}
+
+.obj-crossed {
+  position: relative;
+  opacity: 0.35;
+}
+
+.obj-crossed::after {
+  content: '✕';
+  position: absolute;
+  inset: 0;
+  color: #c0392b;
+  font-weight: 800;
+  text-align: center;
+  opacity: 1;
+}
+
+.regroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.regroup-arrow {
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.block-ones-wide {
+  grid-template-columns: repeat(5, 12px);
+}
+
+.block-new {
+  background: #f2b233;
+}
+
+.venn {
+  position: relative;
+  width: min(460px, 100%);
+  height: 230px;
+  margin: 0 auto;
+}
+
+.venn-circle {
+  position: absolute;
+  top: 26px;
+  width: 58%;
+  height: 196px;
+  border-radius: 50%;
+  border: 4px solid;
+}
+
+.venn-left {
+  left: 2%;
+  border-color: #4b7be5;
+  background: rgba(75, 123, 229, 0.1);
+}
+
+.venn-right {
+  right: 2%;
+  border-color: #e8603c;
+  background: rgba(232, 96, 60, 0.1);
+}
+
+.venn-label {
+  position: absolute;
+  top: 0;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.venn-label-left {
+  left: 10%;
+  color: #2f5bc0;
+}
+
+.venn-label-right {
+  right: 10%;
+  color: #b23c17;
+}
+
+.venn-region {
+  position: absolute;
+  top: 70px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.venn-lo {
+  left: 6%;
+  width: 26%;
+}
+
+.venn-both {
+  left: 38%;
+  width: 24%;
+}
+
+.venn-ro {
+  right: 6%;
+  width: 26%;
+}
+
+.grid-visual {
+  display: grid;
+  justify-content: center;
+}
+
+.grid-compass {
+  grid-template: 'n n n' auto 'w g e' auto 's s s' auto / auto auto auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.compass-n {
+  grid-area: n;
+  text-align: center;
+  font-weight: 800;
+}
+
+.compass-s {
+  grid-area: s;
+  text-align: center;
+  font-weight: 800;
+}
+
+.compass-w {
+  grid-area: w;
+  font-weight: 800;
+}
+
+.compass-e {
+  grid-area: e;
+  font-weight: 800;
+}
+
+.grid-cells {
+  grid-area: g;
+  display: grid;
+  gap: 3px;
+  background: #d8cfbd;
+  padding: 3px;
+  border-radius: 10px;
+}
+
+.grid-cell {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 1.7rem;
+}
+
+.obj-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.row-label {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.row-item {
+  background: #fff8e6;
+  border-radius: 10px;
+  padding: 2px 6px;
+}
+
+.fold-row {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.fold-letter {
+  position: relative;
+  width: 70px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 3.6rem;
+  font-weight: 700;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 12px;
+}
+
+.fold-letter::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 50%;
+  border-left: 3px dashed #e8603c;
+}
+
+@media (max-width: 640px) {
+  .pad-keys {
+    grid-template-columns: repeat(3, 68px);
+  }
+  .grid-cell {
+    width: 44px;
+    height: 44px;
+  }
+}

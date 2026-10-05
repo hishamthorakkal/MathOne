@@ -13,6 +13,7 @@ export type WorldId =
 export type SkillId =
   // Number Jungle
   | 'place_value'
+  | 'number_names'
   | 'compare_numbers'
   | 'ordering'
   | 'number_neighbours'
@@ -33,6 +34,7 @@ export type SkillId =
   | 'shapes_2d'
   | 'solids_3d'
   | 'count_shapes'
+  | 'symmetry'
   // Time Mountain
   | 'clock_reading'
   | 'calendar'
@@ -41,6 +43,7 @@ export type SkillId =
   | 'money_total'
   | 'money_change'
   | 'measurement'
+  | 'temperature'
   // Puzzle Forest
   | 'patterns'
   | 'odd_one_out'
@@ -48,6 +51,8 @@ export type SkillId =
   | 'coding_decoding'
   | 'ranking'
   | 'data_pictograph'
+  | 'spatial'
+  | 'venn'
   // Olympiad Castle
   | 'clue_numbers'
   | 'multi_step';
@@ -62,6 +67,7 @@ export type GameType =
   | 'pattern' // Pattern Cave – complete a pattern
   | 'mystery' // Mystery Dino – clue puzzle
   | 'lava' // Lava Crossing – tap stones in order
+  | 'type' // Dino Calculator – type the answer on a number pad
   | 'pick'; // Picture choice (clocks, shapes, charts)
 
 export type Visual =
@@ -69,9 +75,18 @@ export type Visual =
   | { kind: 'shape'; shape: ShapeName }
   | { kind: 'shapes'; items: ShapeName[] }
   | { kind: 'pictograph'; icon: string; rows: { label: string; count: number }[]; key: number }
-  | { kind: 'blocks'; numbers: number[] }
+  | { kind: 'blocks'; numbers: number[]; hideLabel?: boolean }
   | { kind: 'groups'; groups: number; each: number; icon: string }
-  | { kind: 'emoji'; text: string };
+  | { kind: 'emoji'; text: string }
+  | { kind: 'objects'; parts: { n: number; icon: string; crossed?: number }[]; op?: '+' | '−' }
+  | { kind: 'numberline'; from: number; to: number; step: number }
+  | { kind: 'regroup'; n: number }
+  | { kind: 'abacus'; h: number; t: number; o: number }
+  | { kind: 'thermometer'; value: number }
+  | { kind: 'venn'; left: string; right: string; leftOnly: string[]; both: string[]; rightOnly: string[] }
+  | { kind: 'grid'; cells: string[]; cols: number; compass?: boolean }
+  | { kind: 'row'; items: string[] }
+  | { kind: 'fold'; items: string[] };
 
 export type ShapeName =
   | 'circle'
@@ -103,6 +118,8 @@ export interface Question {
   steps: string[];
   hots?: boolean;
   estSeconds: number;
+  /** Wrong options built from a known misconception, e.g. { "53": "Forgot to carry" }. */
+  mistakes?: Record<string, string>;
 }
 
 export type GameData =
@@ -135,6 +152,15 @@ export interface SkillState {
   counts: Record<Outcome, number>;
   totalSeconds: number;
   lastSeen?: number;
+}
+
+export interface MistakeLog {
+  t: number;
+  skill: SkillId;
+  prompt: string;
+  picked: string;
+  answer: string;
+  tag?: string;
 }
 
 export interface RevisionItem {
@@ -188,6 +214,8 @@ export type Stage = 'egg' | 'baby' | 'explorer' | 'champion' | 'olympiad';
 
 export interface Settings {
   sound: boolean;
+  /** Read word problems aloud automatically (undefined = on). */
+  autoRead?: boolean;
   unlockAll: boolean;
   arena: 'auto' | 'on' | 'off';
 }
@@ -213,4 +241,5 @@ export interface AppState {
   bosses: WorldId[];
   mocks: MockResult[];
   strategies: Record<string, number>;
+  mistakes: MistakeLog[];
 }

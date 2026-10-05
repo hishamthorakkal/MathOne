@@ -4,8 +4,8 @@
     {
       "name": "mathosaur",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "5280", "--strictPort"],
-      "port": 5280
+      "runtimeArgs": ["run", "dev", "--", "--port", "5281", "--strictPort"],
+      "port": 5281
     }
   ]
 }

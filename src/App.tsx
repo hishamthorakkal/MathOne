@@ -1,4 +1,5 @@
 import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Arena } from './pages/child/Arena';
 import { Dinos } from './pages/child/Dinos';
 import { Home } from './pages/child/Home';
@@ -23,6 +24,7 @@ export function App() {
   return (
     <HashRouter>
       <div className="app">
+        <ErrorBoundary>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/map" element={<WorldMap />} />
@@ -34,6 +36,7 @@ export function App() {
           <Route path="/parent/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Home />} />
         </Routes>
+        </ErrorBoundary>
         <ChildFooter />
       </div>
     </HashRouter>

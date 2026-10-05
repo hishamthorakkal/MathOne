@@ -4,6 +4,14 @@ import { readyToHatch, recordOutcome, worldProgress } from './mastery';
 import type { MissionPlan, SegmentKind } from './session';
 import type { AppState, BadgeId, DinoId, Outcome, Question, WorldId } from './types';
 
+/** Keep a short log of wrong answers (with likely misconception) for parents. */
+export function logMistakes(draft: AppState, q: Question, wrongs: { picked: string; tag?: string }[]) {
+  for (const w of wrongs) {
+    draft.mistakes.push({ t: Date.now(), skill: q.skill, prompt: q.prompt, picked: w.picked, answer: q.answer, tag: w.tag });
+  }
+  if (draft.mistakes.length > 300) draft.mistakes.splice(0, draft.mistakes.length - 300);
+}
+
 /** Stars reward effort as well as independent success. */
 export const STARS: Record<Outcome, number> = { independent: 3, retry: 2, hint: 2, guided: 1, incorrect: 1 };
 

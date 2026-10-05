@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import { play, stopSpeaking } from '../engine/audio';
-import { DIFFICULTY_LABEL } from '../engine/catalog';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { play, speak, stopSpeaking } from '../engine/audio';
+import { DIFFICULTY_LABEL, SKILL } from '../engine/catalog';
+import { classifyMistake, replacementOption } from '../engine/misconceptions';
+import { getState } from '../engine/store';
 import { GAME_NAMES, pick } from '../engine/generators';
 import { STARS } from '../engine/rewards';
-import type { Outcome, Question } from '../engine/types';
+import type { Outcome, Question, SkillId } from '../engine/types';
 import { Dino } from './Dino';
-import { DinoRun, EggMatch, FeedDino, LavaCrossing, MysteryDino, NumberTrain, PatternCave, PickGame, TreasureShop } from './games/Games';
+import { DinoRun, EggMatch, FeedDino, LavaCrossing, MysteryDino, NumberPad, NumberTrain, PatternCave, PickGame, TreasureShop } from './games/Games';
 import type { GameProps } from './games/types';
 import { ReadAloud, RichText } from './RichText';
 import { VisualView } from './Visuals';
@@ -20,16 +22,35 @@ const GAMES: Record<Question['game'], (p: GameProps) => JSX.Element> = {
   pattern: PatternCave,
   mystery: MysteryDino,
   lava: LavaCrossing,
+  type: NumberPad,
   pick: PickGame,
 };
 
+/** Games where a tried wrong option can be swapped for a fresh one. */
+const OPTION_GAMES: Question['game'][] = ['run', 'pick', 'train', 'pattern', 'mystery'];
+
 const CHEERS = ['Great thinking!', 'Dino crossed safely!', 'You got it!', 'Super!', 'Brilliant!', 'Roar-some!', 'Well done!'];
 const RETRY_CHEERS = ['You kept trying – and got it!', 'Never give up! 💪', 'That’s the way!'];
-export const STRATEGIES = ['I counted', 'I added tens first', 'I used the picture', 'I found a pattern', 'I guessed'];
+const REASONING_STRATEGIES = ['I found a pattern', 'I crossed some out', 'I checked each clue', 'I drew it in my head', 'I guessed'];
+const PICTURE_STRATEGIES = ['I counted carefully', 'I looked at the picture', 'I used what I know', 'I guessed'];
+const NUMBER_STRATEGIES = ['I counted on', 'I added tens first', 'I used a number fact I know', 'I used the picture', 'I guessed'];
+const PICTURE_SKILLS: SkillId[] = ['shapes_2d', 'solids_3d', 'count_shapes', 'clock_reading', 'data_pictograph', 'temperature', 'measurement', 'symmetry'];
+
+/** "How did you solve it?" choices that fit the kind of question. */
+export function strategiesFor(skill: SkillId): string[] {
+  if (SKILL[skill].reasoning) return REASONING_STRATEGIES;
+  if (PICTURE_SKILLS.includes(skill)) return PICTURE_STRATEGIES;
+  return NUMBER_STRATEGIES;
+}
+
+export interface WrongPick {
+  picked: string;
+  tag?: string;
+}
 
 interface Props {
   q: Question;
-  onDone: (outcome: Outcome, seconds: number, strategy?: string) => void;
+  onDone: (outcome: Outcome, seconds: number, strategy?: string, wrongs?: WrongPick[]) => void;
   /** Ask "How did you solve it?" if solved independently. */
   askStrategy?: boolean;
   header?: React.ReactNode;
@@ -43,16 +64,28 @@ export function QuestionPlayer({ q, onDone, askStrategy = false, header }: Props
   const [phase, setPhase] = useState<Phase>('play');
   const [msg, setMsg] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  const [options, setOptions] = useState(q.options);
+  const shownQ = useMemo(() => ({ ...q, options }), [q, options]);
+  const wrongs = useRef<WrongPick[]>([]);
   const start = useRef(Date.now());
   const elapsed = () => (Date.now() - start.current) / 1000;
   const doneRef = useRef(false);
+  const readText = q.prompt + (q.data?.type === 'mystery' ? '. ' + q.data.clues.join('. ') : '');
 
-  useEffect(() => () => void stopSpeaking(), []);
+  useEffect(() => {
+    // Reading should not be the hidden difficulty: read longer questions aloud.
+    const longText = q.prompt.split(/\s+/).length > 7 || q.data?.type === 'mystery';
+    const t = getState().settings.autoRead !== false && longText ? setTimeout(() => speak(readText), 350) : undefined;
+    return () => {
+      if (t) clearTimeout(t);
+      stopSpeaking();
+    };
+  }, []);
 
   const finish = (o: Outcome, strategy?: string) => {
     if (doneRef.current) return;
     doneRef.current = true;
-    onDone(o, elapsed(), strategy);
+    onDone(o, elapsed(), strategy, wrongs.current);
   };
 
   const handle = (value: string) => {
@@ -67,6 +100,12 @@ export function QuestionPlayer({ q, onDone, askStrategy = false, header }: Props
     }
     const m = misses + 1;
     setMisses(m);
+    if (value !== 'wrong') wrongs.current.push({ picked: value, tag: classifyMistake(q, value) });
+    // Swap the tried option for a fresh one so the next try can't be won by elimination.
+    if (OPTION_GAMES.includes(q.game) && options.includes(value)) {
+      const fresh = replacementOption(q, options);
+      if (fresh) setTimeout(() => setOptions((o) => o.map((x) => (x === value ? fresh : x))), 800);
+    }
     if (m === 1) setMsg('🦖 Dino slipped. Try once more!');
     else if (m === 2) setMsg('💡 Here’s a clue to help you.');
     else if (m === 3) setMsg('🤝 Let’s solve it together, step by step.');
@@ -102,7 +141,7 @@ export function QuestionPlayer({ q, onDone, askStrategy = false, header }: Props
         <h2>
           <RichText text={q.prompt} />
         </h2>
-        <ReadAloud text={q.prompt + (q.data?.type === 'mystery' ? '. ' + q.data.clues.join('. ') : '')} />
+        <ReadAloud text={readText} />
       </div>
       {showVisual && (
         <div className="qp-visual">
@@ -111,7 +150,7 @@ export function QuestionPlayer({ q, onDone, askStrategy = false, header }: Props
       )}
 
       <div className={`qp-game ${phase === 'strategy' || phase === 'revealed' ? 'dim' : ''}`}>
-        <Game key={q.id} q={q} onAnswer={handle} locked={phase !== 'play'} misses={misses} dino={companion} />
+        <Game key={q.id} q={shownQ} onAnswer={handle} locked={phase !== 'play'} misses={misses} dino={companion} />
       </div>
 
       {msg && phase === 'play' && (
@@ -176,7 +215,7 @@ export function QuestionPlayer({ q, onDone, askStrategy = false, header }: Props
         <div className="strategy-box">
           <h3>🦖 How did you solve it?</h3>
           <div className="strategy-options">
-            {STRATEGIES.map((s) => (
+            {strategiesFor(q.skill).map((s) => (
               <button type="button" key={s} className="btn btn-soft" onClick={() => finish('independent', s)}>
                 {s}
               </button>

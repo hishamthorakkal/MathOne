@@ -7,6 +7,7 @@ import { isUnlocked } from '../../engine/mastery';
 import {
   adventureDays,
   applyQuestion,
+  logMistakes,
   completeMission,
   DAILY_CAMP_LIMIT,
   DAILY_MISSION_LIMIT,
@@ -17,7 +18,7 @@ import { buildCamp, buildMission, followUpFor, offlineMission, SEGMENTS, tomorro
 import { getState, update, useAppState } from '../../engine/store';
 import type { BadgeId, Outcome, WorldId } from '../../engine/types';
 import { Dino } from '../../components/Dino';
-import { QuestionPlayer } from '../../components/QuestionPlayer';
+import { QuestionPlayer, type WrongPick } from '../../components/QuestionPlayer';
 import { useCompanion } from '../../components/useCompanion';
 
 type Stage = 'intro' | 'banner' | 'question' | 'summary';
@@ -86,7 +87,7 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
   const prevSegment = idx > 0 ? items[idx - 1].segment : null;
   const askStrategy = useMemo(() => !strategyAsked && idx >= 2 && Math.random() < 0.3, [idx, strategyAsked]);
 
-  const onDone = (outcome: Outcome, seconds: number, strategy?: string) => {
+  const onDone = (outcome: Outcome, seconds: number, strategy?: string, wrongs: WrongPick[] = []) => {
     const streak = outcome === 'independent' ? stats.streak + 1 : 0;
     let earned: BadgeId[] = [];
     update((d) => {
@@ -95,6 +96,7 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
         strategy,
         independentStreak: streak,
       });
+      logMistakes(d, item.q, wrongs);
     });
     if (strategy || askStrategy) setStrategyAsked(true);
     const nextStats = {

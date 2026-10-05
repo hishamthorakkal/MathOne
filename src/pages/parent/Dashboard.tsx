@@ -211,19 +211,75 @@ function Skills({ state }: { state: AppState }) {
 function Needs({ state }: { state: AppState }) {
   const stats = allSkillStats(state).filter((s) => s.total > 0);
   const avg = stats.reduce((a, s) => a + s.avgSeconds * s.total, 0) / Math.max(1, stats.reduce((a, s) => a + s.total, 0));
-  const weakest = [...stats].sort((a, b) => a.mastery - b.mastery).slice(0, 5);
+  // Only judge skills with enough evidence; one answer is not a weakness.
+  const weakest = stats.filter((s) => s.total >= 3).sort((a, b) => a.mastery - b.mastery).slice(0, 5);
   const repeated = stats.filter((s) => s.failures >= 2).sort((a, b) => b.failures - a.failures);
   const hinty = stats.filter((s) => s.total >= 3 && s.hintRate >= 0.35).sort((a, b) => b.hintRate - a.hintRate);
   const slow = stats.filter((s) => s.total >= 3 && s.avgSeconds > avg * 1.5).sort((a, b) => b.avgSeconds - a.avgSeconds);
   const queue = (Object.entries(state.revision) as [SkillId, NonNullable<AppState['revision'][SkillId]>][]).sort((a, b) => b[1].priority - a[1].priority);
+  const tagCounts = new Map<string, { n: number; skills: Set<string> }>();
+  for (const m of state.mistakes) {
+    if (!m.tag) continue;
+    const e = tagCounts.get(m.tag) ?? { n: 0, skills: new Set<string>() };
+    e.n++;
+    e.skills.add(SKILL[m.skill].name);
+    tagCounts.set(m.tag, e);
+  }
+  const misconceptions = [...tagCounts.entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 6);
+  const recent = [...state.mistakes].reverse().slice(0, 12);
 
   if (!stats.length) return <Empty text="No practice yet. Training needs will appear after a few missions." />;
   return (
     <div className="grid-2">
-      <ListCard title="Weakest skills" items={weakest.map((s) => [s.name, pct(s.mastery)])} />
+      <ListCard title="Weakest skills" items={weakest.map((s) => [s.name, pct(s.mastery)])} empty="Not enough practice yet (needs 3+ answers per skill)." />
       <ListCard title="Repeated error concepts" items={repeated.map((s) => [s.name, `${s.failures}× failure`])} empty="None – great!" />
       <ListCard title="Concepts needing hints" items={hinty.map((s) => [s.name, `${pct(s.hintRate)} with help`])} empty="None – great!" />
       <ListCard title="Slow-solving topics" items={slow.map((s) => [s.name, `${Math.round(s.avgSeconds)}s avg (overall ${Math.round(avg)}s)`])} empty="None" />
+      <section className="card span-2">
+        <h2>Likely misconceptions</h2>
+        {misconceptions.length ? (
+          <ul className="kv">
+            {misconceptions.map(([tag, e]) => (
+              <li key={tag}>
+                <span>
+                  <b>{tag}</b> <span className="muted">· {[...e.skills].join(', ')}</span>
+                </span>
+                <span className="muted">{e.n}×</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="muted">No repeated mistake patterns yet.</p>
+        )}
+        <p className="muted small">Worked out from which wrong answer was chosen, e.g. picking 53 for 36 + 27 means the ten was not carried.</p>
+      </section>
+      <section className="card span-2">
+        <h2>Recent mistakes</h2>
+        {recent.length ? (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Chose</th>
+                <th>Correct</th>
+                <th>Why it might have happened</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recent.map((m, i) => (
+                <tr key={i}>
+                  <td>{m.prompt.replace(/\*\*/g, '')}</td>
+                  <td>{m.picked}</td>
+                  <td>{m.answer === 'done' ? '—' : m.answer}</td>
+                  <td className="muted">{m.tag ?? '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="muted">No mistakes recorded yet.</p>
+        )}
+      </section>
       <section className="card span-2">
         <h2>Revision queue (Training Camp)</h2>
         {queue.length ? (
@@ -427,6 +483,10 @@ function SettingsTab({ state }: { state: AppState }) {
         <label className="check">
           <input type="checkbox" checked={s.sound} onChange={(e) => update((d) => void (d.settings.sound = e.target.checked))} /> Sound on
         </label>
+        <label className="check">
+          <input type="checkbox" checked={s.autoRead !== false} onChange={(e) => update((d) => void (d.settings.autoRead = e.target.checked))} /> Read word problems aloud
+          automatically
+        </label>
       </section>
       <section className="card">
         <h2>Access</h2>
@@ -520,8 +580,9 @@ function SettingsTab({ state }: { state: AppState }) {
       <section className="card span-2">
         <h2>Skills covered</h2>
         <p className="muted small">
-          {SKILLS.length} skills across 8 worlds, each with 5 invisible difficulty levels (Explorer → Boss Puzzle). Questions are generated fresh every time, so the
-          same concept returns in different forms for spaced revision.
+          {SKILLS.length} skills across 8 worlds, following the IMO Class 2 syllabus (numbers to 100, two-digit addition and subtraction, with three-digit stretch
+          questions at the top level only). Each skill has 5 invisible difficulty levels (Explorer → Boss Puzzle), and questions are generated fresh every time.
+          Mock exams follow the sample paper: 50 questions in 60 minutes (20 Logical Reasoning, 20 Mathematical Reasoning, 10 Everyday Mathematics).
         </p>
         <p className="small">
           <Link to="/">← Back to the game</Link>
