@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { DIFFICULTY_LABEL, SKILL, SKILLS, WORLDS, skillsOf } from '../../engine/catalog';
 import { addDays, daysToExam, getDateOverride, phaseOf, setDateOverride, today } from '../../engine/dates';
 import { allSkillStats, currentWorld, stageOf, STAGE_INFO, worldProgress } from '../../engine/mastery';
-import { initialState, replaceState, update, useAppState } from '../../engine/store';
+import { clearProgress, initialState, replaceState, update, useAppState } from '../../engine/store';
 import type { AppState, SkillId } from '../../engine/types';
 import { clearParentPass, hasParentPass } from './Gate';
 
@@ -538,14 +538,7 @@ function SettingsTab({ state }: { state: AppState }) {
           <button
             type="button"
             className="btn btn-soft"
-            onClick={() => {
-              const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-              const a = document.createElement('a');
-              a.href = URL.createObjectURL(blob);
-              a.download = `mathosaur-${today()}.json`;
-              a.click();
-              URL.revokeObjectURL(a.href);
-            }}
+            onClick={() => downloadBackup(state)}
           >
             Export progress
           </button>
@@ -568,15 +561,9 @@ function SettingsTab({ state }: { state: AppState }) {
               }}
             />
           </label>
-          <button
-            type="button"
-            className="btn btn-danger"
-            onClick={() => window.confirm('Reset ALL progress? This cannot be undone.') && replaceState(initialState())}
-          >
-            Reset progress
-          </button>
         </div>
       </section>
+      <ClearProgress state={state} />
       <section className="card span-2">
         <h2>Skills covered</h2>
         <p className="muted small">
@@ -589,6 +576,75 @@ function SettingsTab({ state }: { state: AppState }) {
         </p>
       </section>
     </div>
+  );
+}
+
+function downloadBackup(state: AppState) {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `mathosaur-${state.childName || 'progress'}-${today()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/** Two-step "clear everything" so it can't happen by accident. */
+function ClearProgress({ state }: { state: AppState }) {
+  const nav = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [sure, setSure] = useState(false);
+  const answered = state.attempts.length;
+  const days = Object.values(state.days).filter((d) => d.questions > 0).length;
+  return (
+    <section className="card span-2 danger-card">
+      <h2>🗑️ Clear progress on this device</h2>
+      <p className="muted small">
+        Removes everything saved in this browser: {state.childName ? `${state.childName}’s` : 'the'} name, stars, eggs, dinos, skill progress, mistakes and mock results
+        ({answered} answers over {days} {days === 1 ? 'day' : 'days'}). Use this to start fresh or hand the device to another child.
+      </p>
+      {!open ? (
+        <button type="button" className="btn btn-danger" onClick={() => setOpen(true)}>
+          Clear progress…
+        </button>
+      ) : (
+        <div className="danger-confirm">
+          <p>
+            <b>This cannot be undone.</b> Download a backup first if you might want this progress back later.
+          </p>
+          <div className="row">
+            <button type="button" className="btn btn-soft" onClick={() => downloadBackup(state)}>
+              ⬇ Download backup
+            </button>
+          </div>
+          <label className="check">
+            <input type="checkbox" checked={sure} onChange={(e) => setSure(e.target.checked)} /> Yes, delete all progress on this device
+          </label>
+          <div className="row">
+            <button
+              type="button"
+              className="btn btn-danger-solid"
+              disabled={!sure}
+              onClick={() => {
+                clearProgress();
+                nav('/', { replace: true });
+              }}
+            >
+              Clear everything
+            </button>
+            <button
+              type="button"
+              className="btn btn-soft"
+              onClick={() => {
+                setOpen(false);
+                setSure(false);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 

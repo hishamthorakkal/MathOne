@@ -2627,3 +2627,25 @@ mark.clue {
     height: 44px;
   }
 }
+
+/* ---------- clear progress ---------- */
+.danger-card {
+  border-color: #f3c4bd;
+}
+
+.danger-confirm {
+  background: #fff5f3;
+  border: 1px solid #f3c4bd;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.danger-confirm p {
+  margin-top: 0;
+}
+
+.btn-danger-solid {
+  background: #c0392b;
+  color: #fff;
+  box-shadow: 0 4px 0 #8e2a1f;
+}

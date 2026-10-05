@@ -70,6 +70,21 @@ export function replaceState(next: AppState) {
   listeners.forEach((l) => l());
 }
 
+/**
+ * Wipe everything Mathosaur stores on this device (progress, previewed date,
+ * parent sign-in) and start fresh at the welcome screen.
+ */
+export function clearProgress() {
+  try {
+    for (const k of Object.keys(localStorage)) if (k.startsWith('mathosaur:')) localStorage.removeItem(k);
+    for (const k of Object.keys(sessionStorage)) if (k.startsWith('mathosaur:')) sessionStorage.removeItem(k);
+  } catch {
+    /* storage unavailable */
+  }
+  state = initialState();
+  listeners.forEach((l) => l());
+}
+
 function subscribe(l: () => void) {
   listeners.add(l);
   return () => listeners.delete(l);

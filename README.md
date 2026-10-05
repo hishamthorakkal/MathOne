@@ -69,7 +69,8 @@ Open **🔒 Grown-ups** at the bottom of the home screen. Under **Settings** you
 - let your child choose any world
 - open or hide the Olympiad Arena
 - **preview a date**, to see how the plan changes in each phase and in the final week
-- export, import, or reset progress
+- export or import progress
+- **clear all progress on this device** (with a backup option and a confirmation step)
 
 ## Not built yet (from the plan's “later” list)
 
