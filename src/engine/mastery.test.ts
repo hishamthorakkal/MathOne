@@ -49,3 +49,33 @@ describe('mastery model', () => {
     expect(isUnlocked(s, 'volcano_valley', '2026-10-05')).toBe(false);
   });
 });
+
+describe('45-day schedule from Monday 12 October', () => {
+  it('splits the plan into the four phases', async () => {
+    const { SCHEDULE, phaseOf } = await import('./dates');
+    expect(SCHEDULE.start).toBe('2026-10-12');
+    expect(SCHEDULE.phase2).toBe('2026-10-20');
+    expect(SCHEDULE.phase3).toBe('2026-11-06');
+    expect(SCHEDULE.phase4).toBe('2026-11-17');
+    expect(phaseOf('2026-10-12').phase).toBe(1);
+    expect(phaseOf('2026-10-20').phase).toBe(2);
+    expect(phaseOf('2026-11-06').phase).toBe(3);
+    expect(phaseOf('2026-11-17').phase).toBe(4);
+    expect(phaseOf('2026-11-26').phase).toBe(5);
+  });
+
+  it('moves on from a world after its share of mission days, even if not mastered', async () => {
+    const { SCHEDULE, addDays } = await import('./dates');
+    const { currentWorld } = await import('./mastery');
+    const s = initialState();
+    for (let i = 0; i < SCHEDULE.worldDays; i++)
+      s.missions.push({ date: addDays('2026-10-12', i), world: 'number_jungle', seconds: 600, questions: 10, independent: 5, stars: 20 });
+    expect(currentWorld(s)).toBe('volcano_valley');
+  });
+
+  it('keeps the castle closed until 5 days before the Olympiad', () => {
+    const s = initialState();
+    expect(isUnlocked(s, 'olympiad_castle', '2026-11-20')).toBe(false);
+    expect(isUnlocked(s, 'olympiad_castle', '2026-11-21')).toBe(true);
+  });
+});

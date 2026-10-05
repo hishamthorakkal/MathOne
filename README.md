@@ -2,7 +2,7 @@
 
 **Learn. Play. Think. Conquer.**
 
-A child-first maths adventure website that prepares a Class 2 learner for the Math Olympiad on **26 November 2026** through short daily missions (10–15 minutes). It's built from the *Mathosaur Class 2 Olympiad Game Design* specification.
+A child-first maths adventure website that prepares a Class 2 learner for the Math Olympiad on **26 November 2026** through short daily missions (10–15 minutes). The plan starts on **Monday 12 October 2026** (45 days); change `PLAN_START` in `src/engine/catalog.ts` and every phase date moves with it. It's built from the *Mathosaur Class 2 Olympiad Game Design* specification.
 
 ## Run it
 

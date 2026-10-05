@@ -197,3 +197,5 @@ export const BADGES: Record<BadgeId, { name: string; emoji: string; desc: string
 };
 
 export const EXAM_DATE = '2026-11-26';
+/** First day of the daily plan (Monday). The whole schedule is worked out from this and EXAM_DATE. */
+export const PLAN_START = '2026-10-12';

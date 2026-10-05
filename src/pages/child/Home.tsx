@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SKILL, WORLD } from '../../engine/catalog';
-import { daysToExam, phaseOf, today, weekStart } from '../../engine/dates';
+import { daysToExam, daysToStart, phaseOf, prettyDate, SCHEDULE, today, weekStart } from '../../engine/dates';
 import { currentWorld, isMastered, readyToHatch, STAGE_INFO } from '../../engine/mastery';
 import { adventureDays, DAILY_MISSION_LIMIT } from '../../engine/rewards';
 import { arenaAvailable } from '../../engine/session';
@@ -100,8 +100,13 @@ export function Home() {
         )}
       </nav>
 
+      {daysToStart(t) > 0 && (
+        <p className="countdown start-note">
+          🗓️ The big adventure starts on <b>{prettyDate(SCHEDULE.start)}</b>. You can explore with {companion.name} before then!
+        </p>
+      )}
       <p className="countdown">
-        🏰 {left > 0 ? `${left} ${left === 1 ? 'day' : 'days'} until the Olympiad Castle opens · ${phase.name}` : 'The Olympiad is over – well done!'}
+        🏰 {left > 0 ? `${left} ${left === 1 ? 'day' : 'days'} until the Olympiad · ${phase.name}` : 'The Olympiad is over – well done!'}
       </p>
     </div>
   );

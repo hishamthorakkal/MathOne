@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { addDays, daysToExam, phaseOf } from './dates';
+import { addDays, daysToExam, phaseOf, SCHEDULE } from './dates';
 import { completeMission, applyQuestion } from './rewards';
 import { buildCamp, buildMission, buildMock } from './session';
 import { initialState } from './store';
@@ -20,7 +20,7 @@ describe('every day until the Olympiad', () => {
     const report: string[] = [];
     let n = 0;
 
-    for (let day = '2026-10-05'; day <= '2026-11-26'; day = addDays(day, 1)) {
+    for (let day = SCHEDULE.start; day <= '2026-11-26'; day = addDays(day, 1)) {
       store['mathosaur:dateOverride'] = day;
       const left = daysToExam(day);
       const plan = buildMission(state);

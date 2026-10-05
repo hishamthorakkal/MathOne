@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { DIFFICULTY_LABEL, SKILL, SKILLS, WORLDS, skillsOf } from '../../engine/catalog';
-import { addDays, daysToExam, getDateOverride, phaseOf, setDateOverride, today } from '../../engine/dates';
+import { DIFFICULTY_LABEL, EXAM_DATE, SKILL, SKILLS, WORLDS, skillsOf } from '../../engine/catalog';
+import { addDays, daysToExam, getDateOverride, phaseOf, prettyDate, SCHEDULE, setDateOverride, today } from '../../engine/dates';
 import { allSkillStats, currentWorld, stageOf, STAGE_INFO, worldProgress } from '../../engine/mastery';
 import { clearProgress, initialState, replaceState, update, useAppState } from '../../engine/store';
 import type { AppState, SkillId } from '../../engine/types';
@@ -94,6 +94,31 @@ function Overview({ state }: { state: AppState }) {
         <Stat label="Independent accuracy" value={n ? pct(ind / n) : '—'} hint="Correct on the first try, no help" />
         <Stat label="Hint-assisted accuracy" value={helped + failed ? pct(helped / (helped + failed)) : '—'} hint="Solved after a hint or guided steps" />
         <Stat label="Total study time" value={mins(seconds)} />
+      </section>
+
+      <section className="card">
+        <h2>Preparation plan</h2>
+        <table className="table plan-table">
+          <tbody>
+            {[
+              ['Foundation', SCHEDULE.start, addDays(SCHEDULE.phase2, -1)],
+              ['Olympiad Skills', SCHEDULE.phase2, addDays(SCHEDULE.phase3, -1)],
+              ['Olympiad Thinking', SCHEDULE.phase3, addDays(SCHEDULE.phase4, -1)],
+              ['Final Preparation', SCHEDULE.phase4, addDays(SCHEDULE.castleAppears, 6)],
+            ].map(([name, from, to]) => (
+              <tr key={name} className={ph.name === name ? 'plan-now' : ''}>
+                <th>{name}</th>
+                <td>
+                  {prettyDate(from)} – {prettyDate(to)}
+                </td>
+              </tr>
+            ))}
+            <tr>
+              <th>Olympiad</th>
+              <td>{prettyDate(EXAM_DATE)}</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
       <section className="card">
@@ -435,7 +460,7 @@ function Activity({ state }: { state: AppState }) {
 }
 
 function Mocks({ state }: { state: AppState }) {
-  if (!state.mocks.length) return <Empty text="No mock exams yet. The Olympiad Arena opens from 15 October (or enable it in Settings)." />;
+  if (!state.mocks.length) return <Empty text={`No mock exams yet. The Olympiad Arena opens on ${prettyDate(SCHEDULE.phase2)} (or enable it in Settings).`} />;
   return (
     <>
       {[...state.mocks].reverse().map((m, i) => {
@@ -496,7 +521,7 @@ function SettingsTab({ state }: { state: AppState }) {
         <label className="field">
           Olympiad Arena
           <select value={s.arena} onChange={(e) => update((d) => void (d.settings.arena = e.target.value as AppState['settings']['arena']))}>
-            <option value="auto">Automatic (opens 15 Oct)</option>
+            <option value="auto">Automatic (opens {prettyDate(SCHEDULE.phase2)})</option>
             <option value="on">Always available</option>
             <option value="off">Hidden</option>
           </select>

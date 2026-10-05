@@ -1,5 +1,5 @@
 import { DINOS, SKILL, SKILLS, WORLDS, skillsOf, type DinoInfo } from './catalog';
-import { addDays, today } from './dates';
+import { addDays, SCHEDULE, today } from './dates';
 import type { AppState, Difficulty, Outcome, SkillId, SkillState, Stage, WorldId } from './types';
 
 export const OUTCOME_WEIGHT: Record<Outcome, number> = {
@@ -141,14 +141,23 @@ export function recordOutcome(
 // ---------- worlds, stages, dinos ----------
 
 const WORLD_DATE_UNLOCK: Partial<Record<WorldId, string>> = {
-  shape_caves: '2026-10-15',
-  time_mountain: '2026-10-19',
-  treasure_market: '2026-10-23',
-  puzzle_forest: '2026-10-27',
-  olympiad_castle: '2026-11-21', // castle gate opens 5 days before the exam
+  ...SCHEDULE.worlds,
+  olympiad_castle: SCHEDULE.castleOpens, // castle gate opens 5 days before the exam
 };
 
-export const CASTLE_APPEARS = '2026-11-19';
+export const CASTLE_APPEARS = SCHEDULE.castleAppears;
+
+/** Number of different days a daily mission was played in this world. */
+export const missionDays = (state: AppState, w: WorldId) => new Set(state.missions.filter((m) => m.world === w).map((m) => m.date)).size;
+
+/**
+ * Time-boxing so all syllabus areas get covered before the Olympiad: the
+ * adventure moves on once the boss is beaten, the crystal is won, or the
+ * world has had its share of mission days. Unfinished skills keep coming
+ * back through daily revision and Training Camp.
+ */
+export const worldDone = (state: AppState, w: WorldId) =>
+  state.crystals.includes(w) || state.bosses.includes(w) || missionDays(state, w) >= SCHEDULE.worldDays;
 
 export function isUnlocked(state: AppState, w: WorldId, k = today()): boolean {
   if (state.settings.unlockAll) return true;
@@ -156,13 +165,20 @@ export function isUnlocked(state: AppState, w: WorldId, k = today()): boolean {
   if (i === 0) return true;
   const date = WORLD_DATE_UNLOCK[w];
   if (date && k >= date) return true;
-  if (w === 'olympiad_castle') return WORLDS.slice(0, 7).every((x) => state.crystals.includes(x.id));
-  return worldProgress(state, WORLDS[i - 1].id) >= 0.5;
+  const prev = WORLDS[i - 1].id;
+  // The castle is the grand finale: its gate opens 5 days before the Olympiad.
+  if (w === 'olympiad_castle') return false;
+  return worldProgress(state, prev) >= 0.5 || worldDone(state, prev);
 }
 
 export function currentWorld(state: AppState): WorldId {
   const open = WORLDS.filter((w) => isUnlocked(state, w.id));
-  return (open.find((w) => !state.crystals.includes(w.id)) ?? open[open.length - 1]).id;
+  const next = open.find((w) => !worldDone(state, w.id));
+  if (next) return next.id;
+  // Everything has had its turn: revisit the weakest world that still lacks its crystal.
+  const unfinished = open.filter((w) => !state.crystals.includes(w.id));
+  const pool = unfinished.length ? unfinished : open;
+  return [...pool].sort((a, b) => worldProgress(state, a.id) - worldProgress(state, b.id))[0].id;
 }
 
 export const bossReady = (state: AppState, w: WorldId) => !state.bosses.includes(w) && worldProgress(state, w) >= 0.6;

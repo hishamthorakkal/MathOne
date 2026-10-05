@@ -249,7 +249,8 @@ function Summary({
   const week = adventureDays(state, weekStart(t), t);
   const world = WORLD[plan.world];
   const uniqueBadges = [...new Set(badges)];
-  const showSpeed = phaseOf(t).phase >= 3 || t >= '2026-11-01';
+  // Gentle speed feedback only once Olympiad Thinking starts (accuracy first).
+  const showSpeed = phaseOf(t).phase >= 3;
   const prev = state.missions.filter((m) => m.questions > 0).slice(-2, -1)[0];
   const perQ = stats.seconds / Math.max(1, stats.questions);
   const prevPerQ = prev ? prev.seconds / Math.max(1, prev.questions) : null;
