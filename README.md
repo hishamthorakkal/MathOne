@@ -13,6 +13,14 @@ npm test           # generator + mastery-model tests
 npm run build      # static site in dist/ (works from any folder or host)
 ```
 
+## Deploy (GitHub Pages)
+
+The site is published at **https://hishamthorakkal.github.io/MathOne/**.
+
+Every push to `main` runs [.github/workflows/deploy.yml](.github/workflows/deploy.yml). The workflow installs dependencies, runs the tests, builds the site, and publishes the `dist/` folder. If the tests fail, nothing is published.
+
+One-time setup: in the repository, go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
+
 Progress is saved in the browser's `localStorage`, so there's no server or account to set up. Parents can export and import progress from the dashboard.
 
 ## Aligned to the IMO Class 2 syllabus
