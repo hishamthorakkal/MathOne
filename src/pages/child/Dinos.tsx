@@ -1,30 +1,26 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { play } from '../../engine/audio';
-import { BADGES, COSMETICS, DINOS, HATCH_COST, WORLDS } from '../../engine/catalog';
-import { dinoReady, STAGE_INFO, stageOf } from '../../engine/mastery';
+import { BADGES, COSMETICS, DINOS, HATCH_COST, WORLDS, type DinoInfo } from '../../engine/catalog';
+import { dinoReady, STAGE_INFO, STAGE_ORDER, stageIndex, stageProgress } from '../../engine/mastery';
 import { hatch } from '../../engine/rewards';
 import { update, useAppState } from '../../engine/store';
 import type { BadgeId, DinoId } from '../../engine/types';
 import { Dino } from '../../components/Dino';
+import { EvolutionOverlay, GrowthMeter, growthSteps } from '../../components/Evolution';
 import { useCompanion } from '../../components/useCompanion';
-
-const STAGES = ['egg', 'baby', 'explorer', 'champion', 'olympiad'] as const;
 
 export function Dinos() {
   const state = useAppState();
   const companion = useCompanion();
-  const stage = stageOf(state);
-  const [hatching, setHatching] = useState<DinoId | null>(null);
+  const stage = companion.stage;
+  const growth = stageProgress(state);
+  const [hatching, setHatching] = useState<DinoInfo | null>(null);
+  const [replay, setReplay] = useState(false);
 
-  const doHatch = (id: DinoId) => {
+  const doHatch = (d: DinoInfo) => {
     let ok = false;
-    update((d) => void (ok = hatch(d, id)));
-    if (ok) {
-      play('hatch');
-      setHatching(id);
-      setTimeout(() => setHatching(null), 1800);
-    }
+    update((s) => void (ok = hatch(s, d.id as DinoId)));
+    if (ok) setHatching(d); // the hatching scene plays its own sound
   };
 
   return (
@@ -37,20 +33,45 @@ export function Dinos() {
         <span className="crystal-count">🥚 {state.eggs}</span>
       </header>
 
+      {replay && (
+        <EvolutionOverlay steps={growthSteps('egg', stage)} dino={{ name: companion.name, color: companion.color, belly: companion.belly, accessory: state.equipped }} onDone={() => setReplay(false)} />
+      )}
+      {hatching && (
+        <EvolutionOverlay
+          steps={[['egg', 'baby']]}
+          dino={{ name: hatching.name, color: hatching.color, belly: hatching.belly }}
+          messageFor={() => `Welcome to your Dino family, ${hatching.name}! 💚`}
+          onDone={() => setHatching(null)}
+        />
+      )}
+
       <section className="companion-card">
         <Dino size={180} color={companion.color} belly={companion.belly} stage={stage} accessory={state.equipped} mood="happy" />
         <div>
           <h2>
             {companion.name} · {STAGE_INFO[stage].name}
           </h2>
-          <ol className="evolution">
-            {STAGES.map((s) => (
-              <li key={s} className={STAGES.indexOf(s) <= STAGES.indexOf(stage) ? 'evo-done' : ''}>
-                {STAGE_INFO[s].name}
-              </li>
-            ))}
-          </ol>
+          <div className="journey" aria-label="Growth journey">
+            {STAGE_ORDER.map((s, i) => {
+              const reached = stageIndex(s) <= stageIndex(stage);
+              return (
+                <span key={s} style={{ display: 'contents' }}>
+                  {i > 0 && <span className="journey-arrow">›</span>}
+                  <span className={`journey-step ${reached ? '' : 'journey-locked'} ${s === stage ? 'journey-now' : ''}`}>
+                    <Dino size={34 + i * 9} color={companion.color} belly={companion.belly} stage={s} mood={s === stage ? 'happy' : 'sleep'} className={s === stage ? '' : 'dino-still'} />
+                    {reached ? STAGE_INFO[s].name.replace(' Dino', '') : '?'}
+                  </span>
+                </span>
+              );
+            })}
+          </div>
+          <GrowthMeter pct={growth.pct} next={growth.next} />
           <p className="small">Next: {STAGE_INFO[stage].next}</p>
+          {stage !== 'egg' && (
+            <button type="button" className="btn btn-soft" onClick={() => setReplay(true)}>
+              ▶ Watch {companion.name} grow
+            </button>
+          )}
         </div>
       </section>
 
@@ -60,9 +81,9 @@ export function Dinos() {
           const owned = state.hatched.includes(d.id);
           const ready = !owned && dinoReady(state, d);
           return (
-            <div key={d.id} className={`dino-card ${owned ? '' : 'dino-unowned'} ${hatching === d.id ? 'hatching' : ''}`}>
+            <div key={d.id} className={`dino-card ${owned ? '' : 'dino-unowned'}`}>
               {owned ? (
-                <Dino size={110} color={d.color} belly={d.belly} mood={hatching === d.id ? 'cheer' : 'happy'} stage="baby" />
+                <Dino size={110} color={d.color} belly={d.belly} mood="happy" stage="baby" />
               ) : (
                 <div className={`mystery-egg ${ready ? 'egg-wobble' : ''}`}>🥚</div>
               )}
@@ -76,7 +97,7 @@ export function Dinos() {
                   </button>
                 )
               ) : ready ? (
-                <button type="button" className="btn btn-primary" disabled={state.eggs < HATCH_COST} onClick={() => doHatch(d.id)}>
+                <button type="button" className="btn btn-primary" disabled={state.eggs < HATCH_COST} onClick={() => doHatch(d)}>
                   Hatch (🥚 {HATCH_COST})
                 </button>
               ) : (

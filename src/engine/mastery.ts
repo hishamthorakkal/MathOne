@@ -194,6 +194,37 @@ export function stageOf(state: AppState): Stage {
   return 'egg';
 }
 
+export const STAGE_ORDER: Stage[] = ['egg', 'baby', 'explorer', 'champion', 'olympiad'];
+export const stageIndex = (s: Stage) => STAGE_ORDER.indexOf(s);
+
+/**
+ * The stage to show: the highest stage already celebrated. New growth is
+ * revealed by the evolution scene (which then updates `seenStage`), and a
+ * few wrong answers later never make the dino shrink back.
+ */
+export function displayStage(state: AppState): Stage {
+  return state.seenStage ?? stageOf(state);
+}
+
+/** How far the dino is towards its next stage, from 0 to 1. */
+export function stageProgress(state: AppState): { stage: Stage; next: Stage | null; pct: number } {
+  const stage = displayStage(state);
+  const p = (w: WorldId) => worldProgress(state, w);
+  const clamp = (x: number) => Math.max(0, Math.min(1, x));
+  const next = STAGE_ORDER[stageIndex(stage) + 1] ?? null;
+  let pct = 1;
+  if (stage === 'egg') pct = p('number_jungle') / 0.6;
+  else if (stage === 'baby') pct = p('volcano_valley') / 0.6;
+  else if (stage === 'explorer') {
+    const strong = WORLDS.filter((w) => p(w.id) >= 0.5).length;
+    pct = Math.min(p('puzzle_forest') / 0.5, strong / 5);
+  } else if (stage === 'champion') {
+    const bestMock = Math.max(0, ...state.mocks.filter((m) => m.kind === 'full').map((m) => m.score / m.maxScore));
+    pct = Math.max(bestMock / 0.75, p('olympiad_castle') / 0.85);
+  }
+  return { stage, next, pct: next ? clamp(pct) : 1 };
+}
+
 export const STAGE_INFO: Record<Stage, { name: string; next: string }> = {
   egg: { name: 'Dino Egg', next: 'Master basic number sense in Number Jungle to hatch!' },
   baby: { name: 'Baby Dino', next: 'Master addition & subtraction in Volcano Valley to grow.' },

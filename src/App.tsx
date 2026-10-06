@@ -1,5 +1,6 @@
 import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { EvolutionWatcher } from './components/EvolutionWatcher';
 import { Arena } from './pages/child/Arena';
 import { Dinos } from './pages/child/Dinos';
 import { Home } from './pages/child/Home';
@@ -37,6 +38,7 @@ export function App() {
           <Route path="*" element={<Home />} />
         </Routes>
         </ErrorBoundary>
+        <EvolutionWatcher />
         <ChildFooter />
       </div>
     </HashRouter>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { DIFFICULTY_LABEL, EXAM_DATE, SKILL, SKILLS, WORLDS, skillsOf } from '../../engine/catalog';
 import { addDays, daysToExam, getDateOverride, phaseOf, prettyDate, SCHEDULE, setDateOverride, today } from '../../engine/dates';
-import { allSkillStats, currentWorld, stageOf, STAGE_INFO, worldProgress } from '../../engine/mastery';
+import { allSkillStats, currentWorld, displayStage, STAGE_INFO, worldProgress } from '../../engine/mastery';
 import { clearProgress, initialState, replaceState, update, useAppState } from '../../engine/store';
 import type { AppState, SkillId } from '../../engine/types';
 import { clearParentPass, hasParentPass } from './Gate';
@@ -82,7 +82,7 @@ function Overview({ state }: { state: AppState }) {
   const seconds = Object.values(state.days).reduce((a, d) => a + d.seconds, 0);
   const ph = phaseOf();
   const recs = recommendations(state);
-  const stage = stageOf(state);
+  const stage = displayStage(state);
   const guessed = state.strategies['I guessed'] ?? 0;
   const strategyTotal = Object.values(state.strategies).reduce((a, b) => a + b, 0);
 

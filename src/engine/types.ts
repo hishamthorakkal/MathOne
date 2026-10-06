@@ -242,4 +242,6 @@ export interface AppState {
   mocks: MockResult[];
   strategies: Record<string, number>;
   mistakes: MistakeLog[];
+  /** Highest growth stage already celebrated; the dino never shrinks back. */
+  seenStage?: Stage;
 }

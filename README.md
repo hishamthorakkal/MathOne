@@ -77,4 +77,4 @@ Open **🔒 Grown-ups** at the bottom of the home screen. Under **Settings** you
 - Server-side accounts and multiple child profiles (the plan suggests Next.js + Supabase)
 - An admin question editor
 - Family challenge mode
-- Advanced animations
+- Animations beyond dino growth (e.g. animated world map)

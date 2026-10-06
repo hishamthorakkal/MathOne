@@ -25,7 +25,8 @@ export function Dino({
   title = 'Dino',
 }: Props) {
   const dark = shade(color, -0.25);
-  const scale = stage === 'egg' ? 0.82 : stage === 'baby' ? 0.9 : 1;
+  // Each stage is visibly bigger than the last.
+  const scale = { egg: 0.78, baby: 0.82, explorer: 0.9, champion: 0.98, olympiad: 1.04 }[stage];
   const crown = accessory === 'crown' || (stage === 'olympiad' && !accessory);
   return (
     <svg
@@ -38,8 +39,10 @@ export function Dino({
     >
       <ellipse cx="100" cy="188" rx="58" ry="8" fill="rgba(0,0,0,0.12)" />
       <g transform={`translate(100 190) scale(${scale}) translate(-100 -190)`}>
-        {/* tail */}
-        <path d="M62 135 Q22 140 8 108 Q34 128 66 116 Z" fill={color} stroke={dark} strokeWidth="3" strokeLinejoin="round" />
+        {/* tail (wags) */}
+        <g className={mood === 'sleep' ? '' : 'dino-tail'}>
+          <path d="M62 135 Q22 140 8 108 Q34 128 66 116 Z" fill={color} stroke={dark} strokeWidth="3" strokeLinejoin="round" />
+        </g>
         {/* back spikes */}
         {[
           [58, 112],
@@ -68,11 +71,11 @@ export function Dino({
         {mood === 'sleep' ? (
           <path d="M126 66 q8 7 16 0" stroke="#222" strokeWidth="3.5" fill="none" strokeLinecap="round" />
         ) : (
-          <>
+          <g className="dino-eye">
             <circle cx="134" cy="64" r="11" fill="#fff" stroke={dark} strokeWidth="2" />
             <circle cx={mood === 'think' ? 135 : 137} cy={mood === 'think' ? 59 : 65} r="6" fill="#222" />
             <circle cx={mood === 'think' ? 137 : 139} cy={mood === 'think' ? 57 : 62} r="2" fill="#fff" />
-          </>
+          </g>
         )}
         {/* mouth */}
         {mood === 'cheer' ? (
@@ -103,12 +106,15 @@ export function Dino({
           </g>
         )}
         {crown && (
-          <path d="M104 44 l6 -24 l10 14 l8 -18 l8 18 l10 -14 l6 24 Z" fill="#ffd23f" stroke="#c99a00" strokeWidth="2.5" strokeLinejoin="round" />
+          <g className="dino-crown">
+            <path d="M104 44 l6 -24 l10 14 l8 -18 l8 18 l10 -14 l6 24 Z" fill="#ffd23f" stroke="#c99a00" strokeWidth="2.5" strokeLinejoin="round" />
+            <path className="crown-sparkle" d="M146 14 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2 l6 -2 Z" fill="#fff6b0" />
+          </g>
         )}
         {(stage === 'champion' || stage === 'olympiad') && (
           <g>
             <path d="M98 100 l8 20 l8 -20" stroke="#3a86ff" strokeWidth="5" fill="none" />
-            <circle cx="106" cy="126" r="9" fill="#ffd23f" stroke="#c99a00" strokeWidth="2" />
+            <circle className="dino-medal" cx="106" cy="126" r="9" fill="#ffd23f" stroke="#c99a00" strokeWidth="2" />
             <text x="106" y="130" fontSize="10" textAnchor="middle" fill="#8a6500" fontWeight="bold">
               ★
             </text>

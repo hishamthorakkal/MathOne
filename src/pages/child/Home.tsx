@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SKILL, WORLD } from '../../engine/catalog';
 import { daysToExam, daysToStart, phaseOf, prettyDate, SCHEDULE, today, weekStart } from '../../engine/dates';
-import { currentWorld, isMastered, readyToHatch, STAGE_INFO } from '../../engine/mastery';
+import { currentWorld, isMastered, readyToHatch, STAGE_INFO, stageProgress } from '../../engine/mastery';
+import { GrowthMeter } from '../../components/Evolution';
 import { adventureDays, DAILY_MISSION_LIMIT } from '../../engine/rewards';
 import { arenaAvailable } from '../../engine/session';
 import { skillsOf } from '../../engine/catalog';
@@ -43,6 +44,7 @@ export function Home() {
         <div className="home-dino">
           <Dino size={200} color={companion.color} belly={companion.belly} mood={doneToday ? 'sleep' : 'happy'} stage={companion.stage} accessory={companion.accessory} />
           <div className="stage-chip">{STAGE_INFO[companion.stage].name}</div>
+          <GrowthMeter pct={stageProgress(state).pct} next={stageProgress(state).next} compact />
         </div>
         <div className="home-hello">
           <h1>🦖 Hi {state.childName}!</h1>

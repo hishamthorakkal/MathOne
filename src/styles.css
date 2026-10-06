@@ -2700,3 +2700,333 @@ mark.clue {
   flex-wrap: wrap;
   margin-top: 16px;
 }
+
+/* ---------- dino idle life ---------- */
+.dino .dino-tail {
+  transform-box: view-box;
+  transform-origin: 64px 126px;
+  animation: tail-wag 2.4s ease-in-out infinite;
+}
+
+.dino .dino-eye {
+  transform-box: view-box;
+  transform-origin: 134px 64px;
+  animation: blink 5s infinite;
+}
+
+.dino .crown-sparkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: twinkle 2.2s ease-in-out infinite;
+}
+
+.dino .dino-medal {
+  animation: medal-shine 3s ease-in-out infinite;
+}
+
+@keyframes tail-wag {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-7deg); }
+}
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes medal-shine {
+  0%, 100% { fill: #ffd23f; }
+  50% { fill: #fff1a8; }
+}
+
+/* ---------- evolution scene ---------- */
+.evo-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  text-align: center;
+  background: radial-gradient(circle at 50% 40%, #fffbe8 0%, #fff3c4 40%, #f6d98a 100%);
+  animation: evo-fade-in 0.4s ease-out;
+}
+
+.evo-scene {
+  position: relative;
+  width: 300px;
+  height: 280px;
+  display: grid;
+  place-items: center;
+}
+
+.evo-glow {
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 236, 150, 0.6) 45%, transparent 70%);
+  animation: evo-glow-pulse 1.6s ease-in-out infinite;
+}
+
+.evo-burst .evo-glow,
+.evo-reveal .evo-glow {
+  animation: evo-glow-burst 1.2s ease-out forwards;
+}
+
+.evo-dino {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.evo-egg-wobble {
+  animation: evo-egg-wobble 0.5s ease-in-out infinite;
+}
+
+.evo-charge-wiggle {
+  animation: evo-wiggle 0.35s ease-in-out infinite, evo-swell 1.7s ease-in forwards;
+}
+
+.evo-grow-in {
+  animation: evo-grow-in 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.evo-cracks {
+  position: absolute;
+  inset: 0;
+  fill: none;
+  stroke: #7a5b2e;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.evo-cracks path {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: evo-crack 1.5s ease-in forwards;
+}
+
+.evo-cracks path:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.evo-cracks path:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+.evo-shell {
+  position: absolute;
+  bottom: 40px;
+  width: 80px;
+  height: 56px;
+  background: #fff8e7;
+  border: 3px solid #d9c7a0;
+  border-radius: 0 0 50px 50px;
+  clip-path: polygon(0 20%, 15% 0, 30% 20%, 45% 0, 60% 20%, 75% 0, 90% 20%, 100% 0, 100% 100%, 0 100%);
+}
+
+.evo-shell-l {
+  left: 70px;
+  animation: evo-shell-left 1s ease-out forwards;
+}
+
+.evo-shell-r {
+  right: 70px;
+  animation: evo-shell-right 1s ease-out forwards;
+}
+
+.evo-sparkles span {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  font-size: 1.8rem;
+  opacity: 0;
+  animation: evo-sparkle 1.3s ease-out forwards;
+}
+
+.evo-title {
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
+  margin: 0;
+}
+
+.evo-message {
+  font-size: 1.2rem;
+  font-weight: 700;
+  max-width: 520px;
+  margin: 0;
+  animation: evo-fade-in 0.5s ease-out;
+}
+
+.evo-path {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 10px;
+}
+
+.evo-path li {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.evo-path li.evo-path-done {
+  background: #2e9d57;
+  color: #fff;
+}
+
+.evo-skip {
+  margin-top: 8px;
+}
+
+@keyframes evo-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes evo-glow-pulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.7; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes evo-glow-burst {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.35); opacity: 0.55; }
+}
+
+@keyframes evo-egg-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-7deg); }
+  75% { transform: rotate(7deg); }
+}
+
+@keyframes evo-wiggle {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -6px; }
+}
+
+@keyframes evo-swell {
+  from { scale: 1; }
+  to { scale: 1.12; }
+}
+
+@keyframes evo-grow-in {
+  from { transform: scale(0.55); opacity: 0.2; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes evo-crack {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes evo-shell-left {
+  to { transform: translate(-90px, 40px) rotate(-50deg); opacity: 0; }
+}
+
+@keyframes evo-shell-right {
+  to { transform: translate(90px, 40px) rotate(50deg); opacity: 0; }
+}
+
+@keyframes evo-sparkle {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity: 0; }
+}
+
+/* ---------- growth meter ---------- */
+.growth {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(320px, 100%);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.growth-compact {
+  width: 150px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.growth-label {
+  color: var(--muted);
+}
+
+.growth-bar {
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: #ebe3d2;
+  overflow: hidden;
+  box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.growth-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8bdc65, #2e9d57);
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.growth-near span {
+  background: linear-gradient(90deg, #ffd23f, #f2b233);
+}
+
+.growth-almost {
+  color: #a26a00;
+  font-size: 0.85rem;
+}
+
+/* ---------- growth journey on My Dinos ---------- */
+.journey {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 8px 0 4px;
+}
+
+.journey-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.journey-locked svg {
+  filter: brightness(0) opacity(0.18);
+}
+
+.journey-now {
+  color: var(--primary-dark);
+}
+
+.journey-arrow {
+  color: #c9bfa9;
+  font-weight: 800;
+  padding-bottom: 28px;
+}
+
+.dino-still,
+.dino-still * {
+  animation: none !important;
+}

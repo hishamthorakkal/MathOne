@@ -50,6 +50,37 @@ describe('mastery model', () => {
   });
 });
 
+describe('dino growth', () => {
+  const masterWorld = (s: ReturnType<typeof initialState>, skills: Parameters<typeof recordOutcome>[1][]) => {
+    for (const id of skills) for (let i = 0; i < 10; i++) recordOutcome(s, id, 3, 'independent', 10, 'adventure');
+  };
+  const JUNGLE = ['place_value', 'number_names', 'compare_numbers', 'ordering', 'number_neighbours', 'skip_counting', 'even_odd'] as const;
+
+  it('fills the growth meter as Number Jungle is mastered, then hatches', async () => {
+    const { stageProgress, displayStage } = await import('./mastery');
+    const s = initialState();
+    expect(stageProgress(s)).toMatchObject({ stage: 'egg', next: 'baby', pct: 0 });
+    masterWorld(s, [...JUNGLE.slice(0, 3)]);
+    const half = stageProgress(s).pct;
+    expect(half).toBeGreaterThan(0.3);
+    expect(half).toBeLessThan(1);
+    masterWorld(s, [...JUNGLE]);
+    expect(displayStage(s)).toBe('baby');
+  });
+
+  it('never shrinks back after a stage has been reached', async () => {
+    const { displayStage, stageOf } = await import('./mastery');
+    const s = initialState();
+    masterWorld(s, [...JUNGLE]);
+    s.seenStage = 'baby';
+    // A run of mistakes drops measured mastery…
+    for (const id of JUNGLE) for (let i = 0; i < 12; i++) recordOutcome(s, id, 1, 'incorrect', 10, 'adventure');
+    expect(stageOf(s)).toBe('egg');
+    // …but the dino the child sees stays a Baby Dino.
+    expect(displayStage(s)).toBe('baby');
+  });
+});
+
 describe('45-day schedule from Monday 12 October', () => {
   it('splits the plan into the four phases', async () => {
     const { SCHEDULE, phaseOf } = await import('./dates');
