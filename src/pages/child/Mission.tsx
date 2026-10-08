@@ -11,6 +11,7 @@ import {
   completeMission,
   DAILY_CAMP_LIMIT,
   DAILY_MISSION_LIMIT,
+  missionLimit,
   STARS,
   type MissionResult,
 } from '../../engine/rewards';
@@ -36,7 +37,7 @@ export function MissionPage({ kind }: { kind: 'daily' | 'camp' }) {
   const [initial] = useState(() => {
     const s = getState();
     const d = s.days[t];
-    if (kind === 'daily' && (d?.missions ?? 0) >= DAILY_MISSION_LIMIT) return { blocked: 'sleepy' as const };
+    if (kind === 'daily' && (d?.missions ?? 0) >= missionLimit(s, t)) return { blocked: 'sleepy' as const };
     if (kind === 'camp' && (d?.camps ?? 0) >= DAILY_CAMP_LIMIT) return { blocked: 'sleepy' as const };
     if (kind === 'camp') {
       const plan = buildCamp(s);
@@ -58,6 +59,7 @@ function Blocked({ reason, companion }: { reason: 'sleepy' | 'clear'; companion:
         <>
           <h1>Dino is sleepy 😴</h1>
           <p className="lead">We had a great adventure today. Rest your brain and come back tomorrow!</p>
+          <p className="small">Grown-ups can unlock tomorrow’s adventure early in 🔒 Grown-ups → Settings.</p>
         </>
       ) : (
         <>
@@ -158,7 +160,8 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
             ▶ Let’s go!
           </button>
         )}
-        {alreadyToday > 0 && plan.kind === 'daily' && <p className="small">Bonus adventure – the last one for today!</p>}
+        {plan.kind === 'daily' && alreadyToday >= DAILY_MISSION_LIMIT && <p className="small">🌟 Tomorrow’s adventure, unlocked early by a grown-up!</p>}
+        {plan.kind === 'daily' && alreadyToday > 0 && alreadyToday < DAILY_MISSION_LIMIT && <p className="small">Bonus adventure – the last one for today!</p>}
       </div>
     );
   }

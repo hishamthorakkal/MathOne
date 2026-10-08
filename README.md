@@ -69,6 +69,7 @@ Open **🔒 Grown-ups** at the bottom of the home screen. Under **Settings** you
 - let your child choose any world
 - open or hide the Olympiad Arena
 - **preview a date**, to see how the plan changes in each phase and in the final week
+- **unlock tomorrow’s adventure** early (up to 3 extra a day), which counts as a full plan day
 - export or import progress
 - **clear all progress on this device** (with a backup option and a confirmation step)
 

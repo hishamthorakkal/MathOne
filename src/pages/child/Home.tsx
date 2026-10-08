@@ -4,7 +4,7 @@ import { SKILL, WORLD } from '../../engine/catalog';
 import { daysToExam, daysToStart, phaseOf, prettyDate, SCHEDULE, today, weekStart } from '../../engine/dates';
 import { currentWorld, isMastered, readyToHatch, STAGE_INFO, stageProgress } from '../../engine/mastery';
 import { GrowthMeter } from '../../components/Evolution';
-import { adventureDays, DAILY_MISSION_LIMIT } from '../../engine/rewards';
+import { adventureDays, DAILY_MISSION_LIMIT, missionLimit } from '../../engine/rewards';
 import { arenaAvailable } from '../../engine/session';
 import { skillsOf } from '../../engine/catalog';
 import { update, useAppState } from '../../engine/store';
@@ -64,9 +64,9 @@ export function Home() {
             <div className="today-skill">{SKILL[nextSkill].name} Mission</div>
           </>
         )}
-        {missionsToday < DAILY_MISSION_LIMIT ? (
+        {missionsToday < missionLimit(state, t) ? (
           <Link to="/mission" className="btn btn-play">
-            ▶ {doneToday ? 'BONUS ADVENTURE' : 'PLAY'}
+            ▶ {missionsToday >= DAILY_MISSION_LIMIT ? 'NEXT DAY’S ADVENTURE' : doneToday ? 'BONUS ADVENTURE' : 'PLAY'}
           </Link>
         ) : (
           <div className="today-done">✅ All done for today! See you tomorrow.</div>

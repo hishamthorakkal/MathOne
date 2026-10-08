@@ -18,6 +18,19 @@ export const STARS: Record<Outcome, number> = { independent: 3, retry: 2, hint: 
 export const MISSION_STARS = 5;
 export const CAMP_STARS = 3;
 export const DAILY_MISSION_LIMIT = 2;
+/** Most extra adventures a parent can unlock in one day (healthy-use guardrail). */
+export const MAX_EXTRA_PER_DAY = 3;
+
+/** Adventures allowed on a date: the normal limit plus any a parent unlocked. */
+export const missionLimit = (state: AppState, date = today()) => DAILY_MISSION_LIMIT + (state.extraMissions?.[date] ?? 0);
+
+/** Parent mode: let the child play the next day's adventure today. */
+export function unlockNextDay(draft: AppState, date = today()): boolean {
+  const extra = draft.extraMissions?.[date] ?? 0;
+  if (extra >= MAX_EXTRA_PER_DAY) return false;
+  draft.extraMissions = { ...(draft.extraMissions ?? {}), [date]: extra + 1 };
+  return true;
+}
 export const DAILY_CAMP_LIMIT = 2;
 
 export function applyQuestion(
@@ -75,7 +88,10 @@ export function completeMission(
     bonus = MISSION_STARS;
     eggs += 1;
     day.missions += 1;
-    draft.missions.push({ date: t, world: plan.world, ...stats, stars: stats.stars + bonus });
+    // Adventures beyond the normal daily limit were unlocked by a parent as
+    // "the next day's adventure", so they move the plan on by a day.
+    const ahead = day.missions > DAILY_MISSION_LIMIT;
+    draft.missions.push({ date: t, world: plan.world, ...stats, stars: stats.stars + bonus, ...(ahead ? { ahead } : {}) });
     if (plan.boss && !draft.bosses.includes(plan.world)) {
       draft.bosses.push(plan.world);
       bossDefeated = true;

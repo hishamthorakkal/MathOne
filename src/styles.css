@@ -3030,3 +3030,13 @@ mark.clue {
 .dino-still * {
   animation: none !important;
 }
+
+.nextday-card {
+  border-color: #b9d9c2;
+  background: #f6fcf7;
+}
+
+.unlocked-note {
+  color: var(--primary-dark);
+  font-weight: 700;
+}

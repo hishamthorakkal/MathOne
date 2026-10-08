@@ -4,6 +4,7 @@ import { DIFFICULTY_LABEL, EXAM_DATE, SKILL, SKILLS, WORLDS, skillsOf } from '..
 import { addDays, daysToExam, getDateOverride, phaseOf, prettyDate, SCHEDULE, setDateOverride, today } from '../../engine/dates';
 import { allSkillStats, currentWorld, displayStage, STAGE_INFO, worldProgress } from '../../engine/mastery';
 import { clearProgress, initialState, replaceState, update, useAppState } from '../../engine/store';
+import { DAILY_MISSION_LIMIT, MAX_EXTRA_PER_DAY, missionLimit, unlockNextDay } from '../../engine/rewards';
 import type { AppState, SkillId } from '../../engine/types';
 import { clearParentPass, hasParentPass } from './Gate';
 
@@ -500,6 +501,7 @@ function SettingsTab({ state }: { state: AppState }) {
   const s = state.settings;
   return (
     <div className="grid-2">
+      <NextDayCard state={state} />
       <section className="card">
         <h2>Child & sound</h2>
         <label className="field">
@@ -615,6 +617,59 @@ function downloadBackup(state: AppState) {
   a.download = `mathosaur-${state.childName || 'progress'}-${today()}.json`;
   a.click();
   URL.revokeObjectURL(a.href);
+}
+
+/** Parent mode: let the child play the next day's adventure today. */
+function NextDayCard({ state }: { state: AppState }) {
+  const t = today();
+  const played = state.days[t]?.missions ?? 0;
+  const allowed = missionLimit(state, t);
+  const extra = state.extraMissions?.[t] ?? 0;
+  const waiting = Math.max(0, allowed - Math.max(played, DAILY_MISSION_LIMIT));
+  const name = state.childName || 'Your child';
+  return (
+    <section className="card span-2 nextday-card">
+      <h2>🌟 Tomorrow’s adventure</h2>
+      <p className="muted small">
+        Mathosaur normally stops after {DAILY_MISSION_LIMIT} adventures a day so your child doesn’t get tired. Unlock the next day’s adventure early if {name} wants to
+        keep going, or to catch up on a missed day. It counts as a full day of the plan.
+      </p>
+      <p>
+        Today: <b>{played}</b> of <b>{allowed}</b> adventures played
+        {waiting > 0 && (
+          <>
+            {' '}
+            · <span className="unlocked-note">✅ {waiting} unlocked and waiting on the home screen</span>
+          </>
+        )}
+      </p>
+      <div className="row">
+        <button
+          type="button"
+          className="btn btn-primary"
+          disabled={extra >= MAX_EXTRA_PER_DAY}
+          onClick={() => update((d) => void unlockNextDay(d, t))}
+        >
+          ▶ Unlock tomorrow’s adventure now
+        </button>
+        {waiting > 0 && (
+          <button
+            type="button"
+            className="btn btn-soft"
+            onClick={() =>
+              update((d) => {
+                const e = d.extraMissions?.[t] ?? 0;
+                if (e > 0) d.extraMissions = { ...d.extraMissions, [t]: e - 1 };
+              })
+            }
+          >
+            Undo
+          </button>
+        )}
+      </div>
+      {extra >= MAX_EXTRA_PER_DAY && <p className="small muted">That’s the most for one day ({MAX_EXTRA_PER_DAY} extra). More tomorrow!</p>}
+    </section>
+  );
 }
 
 /** Two-step "clear everything" so it can't happen by accident. */

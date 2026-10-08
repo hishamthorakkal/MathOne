@@ -185,6 +185,8 @@ export interface MissionLog {
   questions: number;
   independent: number;
   stars: number;
+  /** A parent-unlocked "next day" adventure played early; counts as its own plan day. */
+  ahead?: boolean;
 }
 
 export interface MockQuestionResult {
@@ -244,4 +246,6 @@ export interface AppState {
   mistakes: MistakeLog[];
   /** Highest growth stage already celebrated; the dino never shrinks back. */
   seenStage?: Stage;
+  /** Extra adventures a parent unlocked, by date (YYYY-MM-DD). */
+  extraMissions?: Record<string, number>;
 }

@@ -148,7 +148,11 @@ const WORLD_DATE_UNLOCK: Partial<Record<WorldId, string>> = {
 export const CASTLE_APPEARS = SCHEDULE.castleAppears;
 
 /** Number of different days a daily mission was played in this world. */
-export const missionDays = (state: AppState, w: WorldId) => new Set(state.missions.filter((m) => m.world === w).map((m) => m.date)).size;
+export const missionDays = (state: AppState, w: WorldId) => {
+  const inWorld = state.missions.filter((m) => m.world === w);
+  // Normal adventures count once per date; parent-unlocked "next day" ones count as their own day.
+  return new Set(inWorld.filter((m) => !m.ahead).map((m) => m.date)).size + inWorld.filter((m) => m.ahead).length;
+};
 
 /**
  * Time-boxing so all syllabus areas get covered before the Olympiad: the

@@ -50,6 +50,26 @@ describe('mastery model', () => {
   });
 });
 
+describe('parent unlock of the next day’s adventure', () => {
+  it('raises today’s limit, caps at 3 extra, and counts each early adventure as a plan day', async () => {
+    const { DAILY_MISSION_LIMIT, MAX_EXTRA_PER_DAY, missionLimit, unlockNextDay } = await import('./rewards');
+    const { missionDays } = await import('./mastery');
+    const s = initialState();
+    const day = '2026-10-14';
+    expect(missionLimit(s, day)).toBe(DAILY_MISSION_LIMIT);
+    expect(unlockNextDay(s, day)).toBe(true);
+    expect(missionLimit(s, day)).toBe(DAILY_MISSION_LIMIT + 1);
+    for (let i = 1; i < MAX_EXTRA_PER_DAY; i++) unlockNextDay(s, day);
+    expect(unlockNextDay(s, day)).toBe(false);
+    expect(missionLimit(s, '2026-10-15')).toBe(DAILY_MISSION_LIMIT); // only for that day
+
+    const m = { world: 'number_jungle' as const, seconds: 600, questions: 10, independent: 5, stars: 20 };
+    s.missions.push({ date: day, ...m }, { date: day, ...m }, { date: day, ...m, ahead: true });
+    // two normal adventures on one date = 1 plan day, plus 1 early "next day" adventure
+    expect(missionDays(s, 'number_jungle')).toBe(2);
+  });
+});
+
 describe('dino growth', () => {
   const masterWorld = (s: ReturnType<typeof initialState>, skills: Parameters<typeof recordOutcome>[1][]) => {
     for (const id of skills) for (let i = 0; i < 10; i++) recordOutcome(s, id, 3, 'independent', 10, 'adventure');
