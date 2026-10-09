@@ -1,4 +1,4 @@
-import type { Question } from '../../engine/types';
+import type { DinoId, Question } from '../../engine/types';
 
 export interface GameProps {
   q: Question;
@@ -8,5 +8,5 @@ export interface GameProps {
   locked: boolean;
   /** Number of misses so far (drives extra visual support). */
   misses: number;
-  dino: { color: string; belly: string };
+  dino: { id?: DinoId; color: string; belly: string };
 }

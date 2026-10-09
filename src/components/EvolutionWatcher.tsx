@@ -30,7 +30,7 @@ export function EvolutionWatcher() {
   return (
     <EvolutionOverlay
       steps={growthSteps(seen, actual)}
-      dino={{ name: companion.name, color: companion.color, belly: companion.belly, accessory: state.equipped }}
+      dino={{ species: companion.id, name: companion.name, color: companion.color, belly: companion.belly, accessory: state.equipped }}
       onDone={() => update((d) => void (d.seenStage = actual))}
     />
   );

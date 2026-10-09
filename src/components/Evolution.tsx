@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { play } from '../engine/audio';
 import { STAGE_INFO, STAGE_ORDER, stageIndex } from '../engine/mastery';
-import type { Stage } from '../engine/types';
+import type { DinoId, Stage } from '../engine/types';
 import { Dino } from './Dino';
 
 interface DinoLook {
+  species?: DinoId;
   name: string;
   color: string;
   belly: string;
@@ -87,7 +88,7 @@ export function EvolutionOverlay({ steps, dino, onDone, messageFor }: Props) {
         <div className="evo-glow" />
         {beat === 'charge' ? (
           <div className={`evo-dino ${hatching ? 'evo-egg-wobble' : 'evo-charge-wiggle'}`}>
-            <Dino size={220} color={dino.color} belly={dino.belly} stage={from} accessory={dino.accessory} mood={hatching ? 'sleep' : 'think'} />
+            <Dino size={220} species={dino.species} color={dino.color} belly={dino.belly} stage={from} accessory={dino.accessory} mood={hatching ? 'sleep' : 'think'} />
             {hatching && (
               <svg className="evo-cracks" viewBox="0 0 200 200" width="220" height="220" aria-hidden="true">
                 <path d="M70 160 l12 -10 l-6 -10 l14 -6" />
@@ -98,7 +99,7 @@ export function EvolutionOverlay({ steps, dino, onDone, messageFor }: Props) {
           </div>
         ) : (
           <div className="evo-dino evo-grow-in">
-            <Dino size={220} color={dino.color} belly={dino.belly} stage={to} accessory={dino.accessory} mood="cheer" />
+            <Dino size={220} species={dino.species} color={dino.color} belly={dino.belly} stage={to} accessory={dino.accessory} mood="cheer" />
           </div>
         )}
         {beat === 'burst' && hatching && (

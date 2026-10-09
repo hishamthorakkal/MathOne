@@ -34,19 +34,19 @@ export function Dinos() {
       </header>
 
       {replay && (
-        <EvolutionOverlay steps={growthSteps('egg', stage)} dino={{ name: companion.name, color: companion.color, belly: companion.belly, accessory: state.equipped }} onDone={() => setReplay(false)} />
+        <EvolutionOverlay steps={growthSteps('egg', stage)} dino={{ species: companion.id, name: companion.name, color: companion.color, belly: companion.belly, accessory: state.equipped }} onDone={() => setReplay(false)} />
       )}
       {hatching && (
         <EvolutionOverlay
           steps={[['egg', 'baby']]}
-          dino={{ name: hatching.name, color: hatching.color, belly: hatching.belly }}
+          dino={{ species: hatching.id, name: hatching.name, color: hatching.color, belly: hatching.belly }}
           messageFor={() => `Welcome to your Dino family, ${hatching.name}! 💚`}
           onDone={() => setHatching(null)}
         />
       )}
 
       <section className="companion-card">
-        <Dino size={180} color={companion.color} belly={companion.belly} stage={stage} accessory={state.equipped} mood="happy" />
+        <Dino size={180} species={companion.id} color={companion.color} belly={companion.belly} stage={stage} accessory={state.equipped} mood="happy" />
         <div>
           <h2>
             {companion.name} · {STAGE_INFO[stage].name}
@@ -58,7 +58,7 @@ export function Dinos() {
                 <span key={s} style={{ display: 'contents' }}>
                   {i > 0 && <span className="journey-arrow">›</span>}
                   <span className={`journey-step ${reached ? '' : 'journey-locked'} ${s === stage ? 'journey-now' : ''}`}>
-                    <Dino size={34 + i * 9} color={companion.color} belly={companion.belly} stage={s} mood={s === stage ? 'happy' : 'sleep'} className={s === stage ? '' : 'dino-still'} />
+                    <Dino size={34 + i * 9} species={companion.id} color={companion.color} belly={companion.belly} stage={s} mood={s === stage ? 'happy' : 'sleep'} className={s === stage ? '' : 'dino-still'} />
                     {reached ? STAGE_INFO[s].name.replace(' Dino', '') : '?'}
                   </span>
                 </span>
@@ -83,7 +83,7 @@ export function Dinos() {
           return (
             <div key={d.id} className={`dino-card ${owned ? '' : 'dino-unowned'}`}>
               {owned ? (
-                <Dino size={110} color={d.color} belly={d.belly} mood="happy" stage="baby" />
+                <Dino size={110} species={d.id} color={d.color} belly={d.belly} mood="happy" stage="baby" />
               ) : (
                 <div className={`mystery-egg ${ready ? 'egg-wobble' : ''}`}>🥚</div>
               )}

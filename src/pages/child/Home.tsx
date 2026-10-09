@@ -31,7 +31,7 @@ export function Home() {
   if (left === 0) {
     return (
       <div className="screen center-col home">
-        <Dino size={220} color={companion.color} belly={companion.belly} mood="cheer" stage={companion.stage} accessory={companion.accessory} />
+        <Dino size={220} species={companion.id} color={companion.color} belly={companion.belly} mood="cheer" stage={companion.stage} accessory={companion.accessory} />
         <h1>Today is Olympiad Day! 🏅</h1>
         <p className="lead">You practised so well, {state.childName}. Take a deep breath, read each question carefully, and do your best. Dino is cheering for you! 🍀</p>
       </div>
@@ -42,7 +42,7 @@ export function Home() {
     <div className="screen home">
       <section className="home-hero">
         <div className="home-dino">
-          <Dino size={200} color={companion.color} belly={companion.belly} mood={doneToday ? 'sleep' : 'happy'} stage={companion.stage} accessory={companion.accessory} />
+          <Dino size={200} species={companion.id} color={companion.color} belly={companion.belly} mood={doneToday ? 'sleep' : 'happy'} stage={companion.stage} accessory={companion.accessory} />
           <div className="stage-chip">{STAGE_INFO[companion.stage].name}</div>
           <GrowthMeter pct={stageProgress(state).pct} next={stageProgress(state).next} compact />
         </div>

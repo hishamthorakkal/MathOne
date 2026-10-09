@@ -2704,13 +2704,11 @@ mark.clue {
 /* ---------- dino idle life ---------- */
 .dino .dino-tail {
   transform-box: view-box;
-  transform-origin: 64px 126px;
   animation: tail-wag 2.4s ease-in-out infinite;
 }
 
 .dino .dino-eye {
   transform-box: view-box;
-  transform-origin: 134px 64px;
   animation: blink 5s infinite;
 }
 
@@ -3039,4 +3037,14 @@ mark.clue {
 .unlocked-note {
   color: var(--primary-dark);
   font-weight: 700;
+}
+
+.dino .dino-flap {
+  transform-box: view-box;
+  animation: wing-flap 1.8s ease-in-out infinite;
+}
+
+@keyframes wing-flap {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.86); }
 }

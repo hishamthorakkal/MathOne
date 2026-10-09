@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" width="900" height="660">
+  <rect width="100%" height="100%" fill="#fff9ee"/>
+  <g transform="translate(0 0)">
+    <rect x="10" y="10" width="280" height="310" rx="24" fill="#ffffff" stroke="#eadfca" stroke-width="3"/>
+    <g transform="translate(40 20) scale(1.1)"><ellipse cx="100" cy="186" rx="60" ry="7" fill="rgba(0,0,0,0.12)"/>
+  <g stroke="#357b38" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M74 118 C 44 116 20 104 6 86 C 16 116 44 140 82 144 Z" fill="#4caf50"/>
+    <path d="M96 140 L 100 176 L 90 182 L 112 182 L 114 150 Z" fill="#419544"/>
+    <ellipse cx="96" cy="124" rx="42" ry="33" fill="#4caf50" transform="rotate(-18 96 124)"/>
+    <ellipse cx="104" cy="134" rx="22" ry="20" fill="#c5e8a5" stroke="none" transform="rotate(-18 104 134)"/>
+    <path d="M104 128 C 126 124 132 148 124 160 L 128 178 L 140 182 L 104 182 L 106 162 C 96 152 94 136 104 128 Z" fill="#4caf50"/>
+    <path d="M108 104 C 116 94 122 88 128 84 L 146 98 C 136 106 126 114 118 122 Z" fill="#4caf50"/>
+    <path d="M118 72 C 118 42 152 34 174 42 C 188 48 194 62 192 74 L 188 82 L 134 86 C 122 86 118 80 118 72 Z" fill="#4caf50"/>
+    <path d="M132 86 L 188 82 C 188 94 176 102 154 102 C 138 102 130 96 132 86 Z" fill="#c5e8a5"/>
+    <path d="M128 116 q 12 0 14 10" fill="none" stroke-width="5"/>
+    <path d="M142 126 l 4 3 M 140 128 l 2 4" stroke-width="2"/>
+  </g>
+  <g fill="#fff" stroke="#357b38" stroke-width="1.2" stroke-linejoin="round">
+    <path d="M150 85 l 3 6 l 3 -6.3 Z"/><path d="M162 84.4 l 3 6 l 3 -6.3 Z"/><path d="M174 83.8 l 3 5.6 l 3 -6 Z"/>
+  </g>
+  <path d="M146 90 Q 166 98 186 86" fill="none" stroke="#357b38" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <circle cx="150" cy="58" r="10" fill="#fff" stroke="#357b38" stroke-width="2"/>
+  <circle cx="152.5" cy="59" r="5.5" fill="#222"/>
+  <circle cx="154.5" cy="56" r="2" fill="#fff"/>
+  <path d="M138 46 q 12 -6 22 -2" fill="none" stroke="#357b38" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="183" cy="56" r="2.4" fill="#357b38"/>
+  <circle cx="144" cy="78" r="5" fill="#ff8fa0" opacity="0.6"/></g>
+    <text x="150" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">Rexy</text>
+    <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d6886" font-style="italic">Tyrannosaurus rex</text>
+    <text x="150" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5d6886">Big head, tiny arms, strong legs</text>
+  </g>
+<g transform="translate(300 0)">
+    <rect x="10" y="10" width="280" height="310" rx="24" fill="#ffffff" stroke="#eadfca" stroke-width="3"/>
+    <g transform="translate(40 20) scale(1.1)"><ellipse cx="92" cy="186" rx="66" ry="7" fill="rgba(0,0,0,0.12)"/>
+  <g transform="translate(0 6) scale(1 0.97)">
+  <g stroke="#295bac" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M40 134 C 22 140 10 156 4 168 C 20 162 34 154 48 146 Z" fill="#3b82f6"/>
+    <rect x="56" y="140" width="16" height="42" rx="7" fill="#326fd1"/>
+    <rect x="100" y="124" width="16" height="58" rx="7" fill="#326fd1"/>
+    <ellipse cx="82" cy="130" rx="46" ry="29" fill="#3b82f6" transform="rotate(-14 82 130)"/>
+    <ellipse cx="86" cy="142" rx="28" ry="14" fill="#bfdbfe" stroke="none" transform="rotate(-14 86 142)"/>
+    <rect x="42" y="142" width="17" height="40" rx="7" fill="#3b82f6"/>
+    <rect x="114" y="120" width="17" height="62" rx="7" fill="#3b82f6"/>
+    <path d="M106 112 C 116 74 128 42 142 26 L 162 34 C 146 52 134 88 128 122 Z" fill="#3b82f6"/>
+    <path d="M124 110 C 130 80 140 54 152 40" fill="none" stroke="#bfdbfe" stroke-width="6"/>
+    <ellipse cx="164" cy="30" rx="22" ry="12" fill="#3b82f6"/>
+    <circle cx="153" cy="19" r="9" fill="#3b82f6"/>
+  </g>
+  <path d="M166 36 Q 176 40 184 33" fill="none" stroke="#295bac" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <circle cx="160" cy="26" r="6.5" fill="#fff" stroke="#295bac" stroke-width="2"/>
+  <circle cx="161.625" cy="26.65" r="3.575" fill="#222"/>
+  <circle cx="162.925" cy="24.7" r="1.3" fill="#fff"/>
+  <circle cx="151" cy="15" r="1.8" fill="#295bac"/><circle cx="156" cy="14" r="1.8" fill="#295bac"/>
+  <circle cx="170" cy="36" r="4" fill="#ff8fa0" opacity="0.6"/>
+  <g fill="#3472d8"><circle cx="70" cy="118" r="4"/><circle cx="86" cy="112" r="3"/><circle cx="60" cy="128" r="3"/></g>
+  </g></g>
+    <text x="150" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">Brachio</text>
+    <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d6886" font-style="italic">Brachiosaurus</text>
+    <text x="150" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5d6886">Very long neck, tall front legs</text>
+  </g>
+<g transform="translate(600 0)">
+    <rect x="10" y="10" width="280" height="310" rx="24" fill="#ffffff" stroke="#eadfca" stroke-width="3"/>
+    <g transform="translate(40 20) scale(1.1)"><ellipse cx="98" cy="186" rx="66" ry="7" fill="rgba(0,0,0,0.12)"/>
+  <g stroke="#ae510f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M44 128 C 26 130 12 138 6 150 C 22 150 36 148 48 144 Z" fill="#f97316"/>
+    <rect x="62" y="148" width="18" height="34" rx="7" fill="#d46213"/>
+    <rect x="114" y="148" width="18" height="34" rx="7" fill="#d46213"/>
+    <ellipse cx="88" cy="132" rx="50" ry="32" fill="#f97316"/>
+    <ellipse cx="94" cy="146" rx="32" ry="13" fill="#fed7aa" stroke="none"/>
+    <rect x="46" y="150" width="19" height="32" rx="7" fill="#f97316"/>
+    <rect x="98" y="150" width="19" height="32" rx="7" fill="#f97316"/>
+    <circle cx="103.1" cy="78.0" r="6" fill="#ff901c"/><circle cx="117.0" cy="63.4" r="6" fill="#ff901c"/><circle cx="136.0" cy="58.0" r="6" fill="#ff901c"/><circle cx="155.0" cy="63.4" r="6" fill="#ff901c"/><circle cx="168.9" cy="78.0" r="6" fill="#ff901c"/><circle cx="174.0" cy="98.0" r="6" fill="#ff901c"/><circle cx="168.9" cy="118.0" r="6" fill="#ff901c"/><circle cx="155.0" cy="132.6" r="6" fill="#ff901c"/><circle cx="136.0" cy="138.0" r="6" fill="#ff901c"/>
+    <ellipse cx="136" cy="98" rx="36" ry="40" fill="#ff8119"/>
+    <ellipse cx="136" cy="100" rx="24" ry="27" fill="#fed7aa" stroke="none"/>
+    <path d="M136 104 C 144 90 168 92 178 106 L 192 118 L 180 128 C 168 136 148 136 138 126 C 130 120 130 110 136 104 Z" fill="#f97316"/>
+    <path d="M182 110 L 194 118 L 182 126 Z" fill="#c75c12"/>
+    <path d="M145 102 L 152 52 L 158 103 Z" fill="#ebe2ce"/>
+    <path d="M155 102 L 176 54 L 167 106 Z" fill="#fff6e0"/>
+    <path d="M177 107 L 188 86 L 186 113 Z" fill="#fff6e0"/>
+  </g>
+  <path d="M150 124 Q 164 132 178 122" fill="none" stroke="#ae510f" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <circle cx="160" cy="110" r="8" fill="#fff" stroke="#ae510f" stroke-width="2"/>
+  <circle cx="162" cy="110.8" r="4.4" fill="#222"/>
+  <circle cx="163.6" cy="108.4" r="1.6" fill="#fff"/>
+  <circle cx="150" cy="120" r="5" fill="#ff8fa0" opacity="0.6"/></g>
+    <text x="150" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">Tricera</text>
+    <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d6886" font-style="italic">Triceratops</text>
+    <text x="150" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5d6886">Three horns and a big frill</text>
+  </g>
+<g transform="translate(0 330)">
+    <rect x="10" y="10" width="280" height="310" rx="24" fill="#ffffff" stroke="#eadfca" stroke-width="3"/>
+    <g transform="translate(40 20) scale(1.1)"><ellipse cx="100" cy="186" rx="40" ry="7" fill="rgba(0,0,0,0.12)"/>
+  <g stroke="#763cad" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M94 106 C 70 78 40 66 6 68 C 18 84 20 104 14 120 C 40 112 68 118 92 126 Z" fill="#ca66ff"/>
+    <path d="M106 106 C 130 78 160 66 194 68 C 182 84 180 104 186 120 C 160 112 132 118 108 126 Z" fill="#ca66ff"/>
+    <path d="M94 106 C 70 78 40 66 6 68" fill="none" stroke-width="5"/>
+    <path d="M106 106 C 130 78 160 66 194 68" fill="none" stroke-width="5"/>
+    <path d="M94 140 l -4 14 l -6 4 M 106 140 l 4 14 l 6 4" fill="none"/>
+    <ellipse cx="100" cy="118" rx="16" ry="24" fill="#a855f7"/>
+    <ellipse cx="100" cy="124" rx="9" ry="14" fill="#e9d5ff" stroke="none"/>
+    <path d="M94 96 C 96 88 104 84 112 84 L 116 98 C 110 102 102 104 96 104 Z" fill="#a855f7"/>
+    <path d="M104 70 L 66 50 L 108 84 Z" fill="#b95eff"/>
+    <path d="M122 72 L 186 88 L 124 94 Z" fill="#ffcf56"/>
+    <ellipse cx="112" cy="80" rx="18" ry="15" fill="#a855f7"/>
+  </g>
+  <path d="M124 90 Q 150 94 176 89" fill="none" stroke="#a68738" stroke-width="2" stroke-linecap="round"/>
+  
+  <circle cx="114" cy="76" r="7.5" fill="#fff" stroke="#763cad" stroke-width="2"/>
+  <circle cx="115.875" cy="76.75" r="4.125" fill="#222"/>
+  <circle cx="117.375" cy="74.5" r="1.5" fill="#fff"/>
+  <circle cx="118" cy="89" r="4" fill="#ff8fa0" opacity="0.6"/></g>
+    <text x="150" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">Ptero</text>
+    <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d6886" font-style="italic">Pteranodon</text>
+    <text x="150" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5d6886">Wide wings, long beak, head crest</text>
+  </g>
+<g transform="translate(300 330)">
+    <rect x="10" y="10" width="280" height="310" rx="24" fill="#ffffff" stroke="#eadfca" stroke-width="3"/>
+    <g transform="translate(40 20) scale(1.1)"><ellipse cx="98" cy="186" rx="64" ry="7" fill="rgba(0,0,0,0.12)"/>
+  <path d="M54 114 C 54 64 96 38 132 106 Z" fill="#fb923c" stroke="#a35f27" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M62 112 L 64 100" stroke="#b0662a" stroke-width="3" stroke-linecap="round"/><path d="M74 112 L 76 80" stroke="#b0662a" stroke-width="3" stroke-linecap="round"/><path d="M86 112 L 88 70" stroke="#b0662a" stroke-width="3" stroke-linecap="round"/><path d="M98 112 L 100 68" stroke="#b0662a" stroke-width="3" stroke-linecap="round"/><path d="M110 112 L 112 76" stroke="#b0662a" stroke-width="3" stroke-linecap="round"/><path d="M122 112 L 124 94" stroke="#b0662a" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="#0a74a3" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M52 122 C 30 116 14 104 4 90 C 6 112 22 132 50 142 Z" fill="#0ea5e9"/>
+    <path d="M26 108 C 24 98 28 92 32 90 C 32 98 36 106 40 112 Z" fill="#fb923c"/>
+    <path d="M86 140 L 90 176 L 80 182 L 104 182 L 104 146 Z" fill="#0c8cc6"/>
+    <ellipse cx="92" cy="124" rx="46" ry="30" fill="#0ea5e9"/>
+    <ellipse cx="98" cy="136" rx="28" ry="15" fill="#bae6fd" stroke="none"/>
+    <path d="M100 130 C 120 128 126 148 118 158 L 122 178 L 134 182 L 100 182 L 102 162 C 92 152 92 136 100 130 Z" fill="#0ea5e9"/>
+    <path d="M126 116 q 10 2 10 12" fill="none" stroke-width="5"/>
+    <path d="M118 96 C 124 86 134 84 144 86 L 192 94 C 196 98 194 104 188 104 L 146 106 C 132 108 120 104 118 96 Z" fill="#0ea5e9"/>
+    <path d="M136 106 L 188 104 C 186 110 176 112 160 112 C 146 112 138 110 136 106 Z" fill="#bae6fd"/>
+  </g>
+  <g fill="#fff" stroke="#0a74a3" stroke-width="1"><path d="M160 104.8 l 2 4 l 2 -4.1 Z"/><path d="M170 104.4 l 2 4 l 2 -4.1 Z"/><path d="M180 104 l 2 3.6 l 2 -3.8 Z"/></g>
+  
+  <circle cx="140" cy="92" r="8" fill="#fff" stroke="#0a74a3" stroke-width="2"/>
+  <circle cx="142" cy="92.8" r="4.4" fill="#222"/>
+  <circle cx="143.6" cy="90.4" r="1.6" fill="#fff"/>
+  <circle cx="184" cy="96" r="2" fill="#0a74a3"/>
+  <circle cx="152" cy="104" r="4" fill="#ff8fa0" opacity="0.6"/></g>
+    <text x="150" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">Spino</text>
+    <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d6886" font-style="italic">Spinosaurus</text>
+    <text x="150" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5d6886">Sail on its back, long snout</text>
+  </g>
+<g transform="translate(600 330)">
+    <rect x="10" y="10" width="280" height="310" rx="24" fill="#ffffff" stroke="#eadfca" stroke-width="3"/>
+    <g transform="translate(40 20) scale(1.1)"><ellipse cx="100" cy="186" rx="58" ry="7" fill="rgba(0,0,0,0.12)"/>
+  <g stroke="#9e1432" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M66 104 L 10 92 L 12 102 L 64 120 Z" fill="#e11d48"/>
+    <path d="M14 92 L 2 84 L 6 96 L 0 100 L 12 102 Z" fill="#ffd166"/>
+    <path d="M90 120 L 96 150 L 92 176 L 84 182 L 104 182 L 104 150 Z" fill="#bf193d"/>
+    <ellipse cx="96" cy="110" rx="36" ry="21" fill="#e11d48" transform="rotate(-8 96 110)"/>
+    <ellipse cx="100" cy="118" rx="22" ry="10" fill="#fecdd3" stroke="none"/>
+    <path d="M104 116 C 118 118 122 136 114 146 L 118 172 L 132 178 L 132 184 L 104 184 L 104 174 L 98 150 C 90 140 92 120 104 116 Z" fill="#e11d48"/>
+    <path d="M112 176 Q 122 166 112 156" fill="none" stroke-width="3.5"/>
+    <path d="M122 98 C 132 90 134 78 138 70 L 150 74 C 146 88 140 100 130 112 Z" fill="#e11d48"/>
+    <path d="M136 62 C 142 52 162 52 176 58 L 194 66 C 194 72 186 76 178 76 L 148 78 C 138 78 132 70 136 62 Z" fill="#e11d48"/>
+    <path d="M118 112 C 130 112 136 122 132 130 L 126 128 C 128 122 124 118 118 118 Z" fill="#e11d48"/>
+    <path d="M120 120 l 4 12 l 4 -2 l 2 6" fill="none" stroke="#997d3d" stroke-width="2"/>
+  </g>
+  <path d="M140 56 l 2 -10 l 4 9 l 3 -11 l 3 12" fill="#ffd166" stroke="#997d3d" stroke-width="2" stroke-linejoin="round"/>
+  <g fill="#b9183b"><path d="M78 92 l 6 -2 l -2 8 Z"/><path d="M92 90 l 6 -2 l -2 8 Z"/><path d="M106 90 l 6 -1 l -2 8 Z"/></g>
+  <path d="M154 72 Q 170 78 188 70" fill="none" stroke="#9e1432" stroke-width="2.5" stroke-linecap="round"/>
+  <g fill="#fff" stroke="#9e1432" stroke-width="1"><path d="M166 75.5 l 2 3.6 l 2 -3.8 Z"/><path d="M176 74 l 2 3.4 l 2 -3.6 Z"/></g>
+  
+  <circle cx="154" cy="64" r="8" fill="#fff" stroke="#9e1432" stroke-width="2"/>
+  <circle cx="156" cy="64.8" r="4.4" fill="#222"/>
+  <circle cx="157.6" cy="62.4" r="1.6" fill="#fff"/>
+  <path d="M144 54 l 16 3" stroke="#9e1432" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="189" cy="64" r="1.8" fill="#9e1432"/>
+  <circle cx="150" cy="74" r="4" fill="#ff8fa0" opacity="0.6"/></g>
+    <text x="150" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#1f2a44">Raptor</text>
+    <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#5d6886" font-style="italic">Velociraptor</text>
+    <text x="150" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#5d6886">Fast, feathery, sickle claw</text>
+  </g>
+</svg>

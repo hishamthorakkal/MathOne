@@ -63,7 +63,7 @@ export function DinoRun({ q, onAnswer, locked, dino }: GameProps) {
         className={`run-dino ${lane != null ? 'running' : ''} ${slip ? 'slipping' : ''} ${solved ? 'crossed' : ''}`}
         style={{ left: `${pos}%` }}
       >
-        <Dino size={92} color={dino.color} belly={dino.belly} mood={slip ? 'oops' : solved ? 'cheer' : 'happy'} />
+        <Dino size={92} species={dino.id} color={dino.color} belly={dino.belly} mood={slip ? 'oops' : solved ? 'cheer' : 'happy'} />
       </div>
     </div>
   );
@@ -91,7 +91,7 @@ export function FeedDino({ q, onAnswer, locked, misses, dino }: GameProps) {
         <div className="bubble">
           I need <b>{data.need}</b> {data.item}!
         </div>
-        <Dino size={130} color={dino.color} belly={dino.belly} mood={locked ? 'cheer' : munch ? 'think' : 'happy'} />
+        <Dino size={130} species={dino.id} color={dino.color} belly={dino.belly} mood={locked ? 'cheer' : munch ? 'think' : 'happy'} />
       </div>
       <div className="plate" aria-label={`Plate with ${data.have} already and ${added} added`}>
         <div className="plate-items">
@@ -318,7 +318,7 @@ export function MysteryDino({ q, onAnswer, locked, dino }: GameProps) {
   return (
     <div className="mystery-scene">
       <div className="mystery-head">
-        <Dino size={90} color={dino.color} belly={dino.belly} mood="think" />
+        <Dino size={90} species={dino.id} color={dino.color} belly={dino.belly} mood="think" />
         <span className="mystery-q">❓</span>
       </div>
       <ol className="clues">

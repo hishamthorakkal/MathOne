@@ -54,7 +54,7 @@ export function MissionPage({ kind }: { kind: 'daily' | 'camp' }) {
 function Blocked({ reason, companion }: { reason: 'sleepy' | 'clear'; companion: ReturnType<typeof useCompanion> }) {
   return (
     <div className="screen center-col">
-      <Dino size={200} color={companion.color} belly={companion.belly} mood={reason === 'sleepy' ? 'sleep' : 'cheer'} stage={companion.stage} accessory={companion.accessory} />
+      <Dino size={200} species={companion.id} color={companion.color} belly={companion.belly} mood={reason === 'sleepy' ? 'sleep' : 'cheer'} stage={companion.stage} accessory={companion.accessory} />
       {reason === 'sleepy' ? (
         <>
           <h1>Dino is sleepy 😴</h1>
@@ -149,7 +149,7 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
         <div className="world-badge">
           {world.emoji} {plan.kind === 'camp' ? 'Dino Training Camp' : world.name}
         </div>
-        <Dino size={190} color={companion.color} belly={companion.belly} mood={introLine === 0 ? 'happy' : 'think'} stage={companion.stage} accessory={companion.accessory} />
+        <Dino size={190} species={companion.id} color={companion.color} belly={companion.belly} mood={introLine === 0 ? 'happy' : 'think'} stage={companion.stage} accessory={companion.accessory} />
         <div className="speech">{plan.intro[introLine]}</div>
         {introLine < plan.intro.length - 1 ? (
           <button type="button" className="btn btn-primary btn-big" onClick={() => setIntroLine((l) => l + 1)} autoFocus>
@@ -271,7 +271,7 @@ function Summary({
   return (
     <div className="screen summary center-col" style={{ ['--world' as string]: world.color }}>
       <div onAnimationEnd={() => setSleepy(true)} className="summary-dino">
-        <Dino size={170} color={companion.color} belly={companion.belly} mood={sleepy ? 'sleep' : 'cheer'} stage={companion.stage} accessory={companion.accessory} />
+        <Dino size={170} species={companion.id} color={companion.color} belly={companion.belly} mood={sleepy ? 'sleep' : 'cheer'} stage={companion.stage} accessory={companion.accessory} />
       </div>
       <h1>{plan.kind === 'camp' ? 'Training complete! 💪' : plan.boss ? `You beat ${world.boss.name}! 🎉` : plan.light ? 'You are ready! 🌟' : 'Mission complete! 🎉'}</h1>
       <div className="reward-row">
