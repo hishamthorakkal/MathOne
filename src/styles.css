@@ -3342,85 +3342,25 @@ button.dcard-body {
   text-align: center;
 }
 
-.world-crystals {
+.cave-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 12px;
-  margin-top: 12px;
+  margin-bottom: 8px;
 }
 
-.crystal-card {
+.cave-tile {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 12px 8px;
-  background: #fff;
-  border: 3px solid var(--line);
-  border-radius: 20px;
   text-align: center;
 }
 
-.crystal-won {
-  border-color: var(--world);
-}
-
-.crystal-fill {
-  transition: y 1s ease, height 1s ease;
-}
-
-.gem-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  justify-content: center;
-}
-
-.gem {
-  width: 11px;
-  height: 11px;
-  transform: rotate(45deg);
-  border-radius: 2px;
-  background: #ece6d9;
-  border: 1.5px solid #cfc6b4;
-}
-
-.gem-on {
-  background: var(--world);
-  border-color: color-mix(in srgb, var(--world) 65%, #000);
-}
-
-.bonus-crystals {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 12px;
-}
-
-.bonus-card {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 10px 14px;
-  background: #fff;
-  border: 3px solid var(--line);
-  border-radius: 18px;
-}
-
-.bonus-card > div {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.bonus-won {
-  border-color: var(--gem);
-}
-
-.bonus-done {
-  color: var(--primary-dark);
-  font-weight: 800;
-  font-size: 0.9rem;
+.cave-tile .crystal {
+  width: 76px;
+  height: 76px;
+  font-size: 2.4rem;
 }
 
 a.crystal-count {

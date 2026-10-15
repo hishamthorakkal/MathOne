@@ -343,6 +343,7 @@ export const SLOTS: { id: Slot; name: string; emoji: string }[] = [
 export interface BonusCrystal {
   id: string;
   name: string;
+  emoji: string;
   color: string;
   how: string;
   rule:
@@ -359,14 +360,14 @@ export interface BonusCrystal {
 export const BONUS_CRYSTAL_EGGS = 2;
 
 export const BONUS_CRYSTALS: BonusCrystal[] = [
-  { id: 'star', name: 'Star Crystal', color: '#facc15', how: 'Score 60% in a full mock', rule: { kind: 'mock', score: 0.6 } },
-  { id: 'camp', name: 'Camp Crystal', color: '#38bdf8', how: 'Finish Training Camp 3 times', rule: { kind: 'camps', count: 3 } },
-  { id: 'nevergiveup', name: 'Never Give Up Crystal', color: '#f43f5e', how: '"Never Give Up" badge 10 times', rule: { kind: 'badge', badge: 'never_give_up', count: 10 } },
-  { id: 'explorer', name: 'Explorer Crystal', color: '#22c55e', how: '5 Real-World Missions', rule: { kind: 'realWorld', count: 5 } },
-  { id: 'sunshine', name: 'Sunshine Crystal', color: '#fb923c', how: 'Play on 20 Adventure Days', rule: { kind: 'days', count: 20 } },
-  { id: 'dinofriend', name: 'Dino Friend Crystal', color: '#a855f7', how: 'Find 10 dinos', rule: { kind: 'dinos', count: 10 } },
-  { id: 'thinker', name: 'Thinker Crystal', color: '#6366f1', how: '"Great Thinker" badge 10 times', rule: { kind: 'badge', badge: 'great_thinker', count: 10 } },
-  { id: 'rainbow', name: 'Rainbow Crystal', color: 'rainbow', how: 'Win all 8 world crystals', rule: { kind: 'worldCrystals', count: 8 }, legendary: true },
+  { id: 'star', emoji: '⭐', name: 'Star Crystal', color: '#facc15', how: 'Score 60% in a full mock', rule: { kind: 'mock', score: 0.6 } },
+  { id: 'camp', emoji: '⛺', name: 'Camp Crystal', color: '#38bdf8', how: 'Finish Training Camp 3 times', rule: { kind: 'camps', count: 3 } },
+  { id: 'nevergiveup', emoji: '💪', name: 'Never Give Up Crystal', color: '#f43f5e', how: '"Never Give Up" badge 10 times', rule: { kind: 'badge', badge: 'never_give_up', count: 10 } },
+  { id: 'explorer', emoji: '🧭', name: 'Explorer Crystal', color: '#22c55e', how: '5 Real-World Missions', rule: { kind: 'realWorld', count: 5 } },
+  { id: 'sunshine', emoji: '☀️', name: 'Sunshine Crystal', color: '#fb923c', how: 'Play on 20 Adventure Days', rule: { kind: 'days', count: 20 } },
+  { id: 'dinofriend', emoji: '🦕', name: 'Dino Friend Crystal', color: '#a855f7', how: 'Find 10 dinos', rule: { kind: 'dinos', count: 10 } },
+  { id: 'thinker', emoji: '🧠', name: 'Thinker Crystal', color: '#6366f1', how: '"Great Thinker" badge 10 times', rule: { kind: 'badge', badge: 'great_thinker', count: 10 } },
+  { id: 'rainbow', emoji: '🌈', name: 'Rainbow Crystal', color: 'rainbow', how: 'Win all 8 world crystals', rule: { kind: 'worldCrystals', count: 8 }, legendary: true },
 ];
 
 export const BADGES: Record<BadgeId, { name: string; emoji: string; desc: string }> = {

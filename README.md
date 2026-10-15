@@ -45,7 +45,7 @@ Content follows the IMO Class 2 syllabus and the official sample paper:
 | Spec area | Where |
 |---|---|
 | Story, 8 worlds, crystals, Professor Zero | `src/engine/catalog.ts`, Adventure Map |
-| Crystal Cave: world crystals fill with skill gems (one per mastered skill), plus 8 bonus crystals for good habits (+2 eggs each) | `src/pages/child/CrystalCave.tsx`, `src/engine/collection.ts` |
+| Crystal Cave: the 8 world crystals plus 8 bonus crystals for good habits (+2 eggs each), grey until won | `src/pages/child/CrystalCave.tsx`, `src/engine/collection.ts` |
 | Daily loop: story → mini-games → recall → HOTS → treasure / mini-boss → reward → stop | `src/engine/session.ts`, `src/pages/child/Mission.tsx` |
 | 37 skills × 5 invisible difficulty levels, procedurally generated | `src/engine/generators.ts` |
 | Mini-games: Dino Run, Feed the Dino, Egg Match, Number Train, Treasure Shop, Pattern Cave, plus Mystery Dino, Lava Crossing, Dino Calculator, picture choice | `src/components/games/Games.tsx` |

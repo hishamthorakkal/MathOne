@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BADGES, WORLDS, type DinoInfo } from '../../engine/catalog';
-import { gemsOf } from '../../engine/collection';
+import { BADGES, BONUS_CRYSTALS, WORLDS, type DinoInfo } from '../../engine/catalog';
 import { STAGE_INFO, STAGE_ORDER, stageIndex, stageProgress } from '../../engine/mastery';
 import { hatch } from '../../engine/rewards';
 import { update, useAppState } from '../../engine/store';
@@ -87,7 +86,7 @@ export function Dinos() {
       <WardrobePanel state={state} />
 
       <Link to="/crystals" className="new-egg-banner crystal-link">
-        💎 Crystal Cave: {state.crystals.length} of {WORLDS.length} world crystals · {gemsOf(state).length} skill gems · {(state.bonusCrystals ?? []).length} bonus crystals ▶
+        💎 Crystal Cave: {state.crystals.length + (state.bonusCrystals ?? []).length} of {WORLDS.length + BONUS_CRYSTALS.length} crystals won ▶
       </Link>
 
       <h2 className="section-title">Badges</h2>

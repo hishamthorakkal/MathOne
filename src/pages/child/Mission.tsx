@@ -306,7 +306,7 @@ function Summary({
         const newGems = gemsOf(state).filter((g) => !gemsAtStart.includes(g));
         return newGems.length ? (
           <Link to="/crystals" className="banner-note crystal-note">
-            ✨ New gem{newGems.length > 1 ? 's' : ''}! You mastered {newGems.map((g) => SKILL[g].name).join(', ')}. 💎
+            ✨ You mastered {newGems.map((g) => SKILL[g].name).join(', ')}! One step closer to the crystal. 💎
           </Link>
         ) : null;
       })()}
