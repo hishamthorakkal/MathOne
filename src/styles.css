@@ -3144,18 +3144,31 @@ button.dcard-body {
   position: relative;
 }
 
-.dcard-sil svg {
-  filter: brightness(0) opacity(0.16);
+/* mystery eggs: a dino stays a secret until it hatches */
+.mystery-shell .mystery-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
 
-.dcard-q {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 3rem;
-  font-weight: 800;
-  color: #a8916b;
+.egg-footprints .mystery-body {
+  animation: egg-nudge 2.4s ease-in-out infinite;
+}
+
+.egg-egg .mystery-body {
+  animation: wobble 1.6s ease-in-out infinite;
+}
+
+@keyframes egg-nudge {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  78% { transform: rotate(-6deg); }
+  86% { transform: rotate(5deg); }
+  94% { transform: rotate(-2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystery-shell .mystery-body {
+    animation: none;
+  }
 }
 
 .dcard-feet {
