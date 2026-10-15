@@ -19,7 +19,7 @@ Art: [new-dinos.png](new-dinos.png) · Screen mock-up: [discovery-book.png](disc
 
 ## 2. The roster — 18 dinos
 
-6 dinos already in the game, plus 12 new ones. Each new dino is linked to a world or to a good learning habit.
+**All 6 existing dinos stay exactly as they are** (Rexy, Brachio, Tricera, Ptero, Spino and Raptor, with the same looks and the same unlock rules). **12 new dinos are added** alongside them, for 18 in total. Nothing is removed or replaced, and any dino a child has already hatched stays hatched. Each new dino is linked to a world or to a good learning habit.
 
 | # | Dino | Species | Found by | Why it fits |
 |---|---|---|---|---|
@@ -113,7 +113,7 @@ Roughly **one discovery every 3 days**, following the world order in the plan:
 
 ## 8. Decisions needed before building
 
-1. **18 dinos, or fewer?** Could start with 6 of the new ones.
+1. ~~18 dinos, or fewer?~~ **Decided: keep all 6 existing dinos and add all 12 new ones (18 total).**
 2. **Should Golden Rex count a full mock at 75%,** or only the castle crystal?
 3. **Is a parent tick OK for Real-World Missions** (Archie)?
 4. **Should Dino Maths answers count towards skill mastery,** or just be for fun?
