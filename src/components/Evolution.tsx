@@ -25,7 +25,10 @@ const MESSAGES: Record<Stage, (name: string) => string> = {
   egg: (n) => `${n} is waiting inside the egg.`,
   baby: (n) => `Your number sense helped the egg crack open. Say hello to baby ${n}!`,
   explorer: (n) => `${n} is an Explorer now! Adding and taking away are your super powers.`,
+  adventurer: (n) => `Adventurer Dino! ${n} got a compass for exploring new worlds. 🧭`,
+  brave: (n) => `Brave Dino! ${n} earned a hero cape for not giving up. 🦸`,
   champion: (n) => `Champion Dino! ${n} is proud of your clever thinking.`,
+  super: (n) => `Super Dino! ${n} is nearly ready for the Olympiad. ⚡`,
   olympiad: (n) => `Olympiad Dino! ${n} is ready for the Olympiad Castle. 👑`,
 };
 
@@ -80,7 +83,7 @@ export function EvolutionOverlay({ steps, dino, onDone, messageFor }: Props) {
         : `${dino.name} is growing…`
       : hatching
         ? `${dino.name} hatched! 🐣`
-        : `${dino.name} became an ${STAGE_INFO[to].name}!`.replace('an C', 'a C');
+        : `${dino.name} became ${/^[AEIOU]/.test(STAGE_INFO[to].name) ? 'an' : 'a'} ${STAGE_INFO[to].name}!`;
 
   return (
     <div className="evo-backdrop" role="dialog" aria-modal="true" aria-live="polite" aria-label={title}>

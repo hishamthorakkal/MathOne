@@ -187,18 +187,40 @@ export function currentWorld(state: AppState): WorldId {
 
 export const bossReady = (state: AppState, w: WorldId) => !state.bosses.includes(w) && worldProgress(state, w) >= 0.6;
 
+const bestMockScore = (state: AppState) => Math.max(0, ...state.mocks.filter((m) => m.kind === 'full').map((m) => m.score / m.maxScore));
+
+/**
+ * Growth stages, earned in order. Each requirement returns progress from 0 to 1
+ * (1 = earned). Spread across the worlds so the dino grows about every 5 days.
+ */
+const STAGE_RULES: { stage: Stage; req: (state: AppState) => number }[] = [
+  { stage: 'egg', req: () => 1 },
+  { stage: 'baby', req: (s) => worldProgress(s, 'number_jungle') / 0.6 },
+  { stage: 'explorer', req: (s) => worldProgress(s, 'volcano_valley') / 0.6 },
+  { stage: 'adventurer', req: (s) => Math.min(worldProgress(s, 'dino_nest'), worldProgress(s, 'shape_caves')) / 0.5 },
+  { stage: 'brave', req: (s) => Math.min(worldProgress(s, 'time_mountain'), worldProgress(s, 'treasure_market')) / 0.5 },
+  {
+    stage: 'champion',
+    req: (s) => Math.min(worldProgress(s, 'puzzle_forest') / 0.5, WORLDS.filter((w) => worldProgress(s, w.id) >= 0.5).length / 5),
+  },
+  { stage: 'super', req: (s) => Math.max(worldProgress(s, 'olympiad_castle') / 0.5, bestMockScore(s) / 0.6) },
+  {
+    stage: 'olympiad',
+    req: (s) => (s.crystals.includes('olympiad_castle') ? 1 : Math.min(0.99, Math.max(bestMockScore(s) / 0.75, worldProgress(s, 'olympiad_castle') / 0.85))),
+  },
+];
+
+/** The highest stage whose requirements, and all earlier ones, are met. */
 export function stageOf(state: AppState): Stage {
-  const p = (w: WorldId) => worldProgress(state, w);
-  const bestMock = Math.max(0, ...state.mocks.filter((m) => m.kind === 'full').map((m) => m.score / m.maxScore));
-  if (state.crystals.includes('olympiad_castle') || bestMock >= 0.75) return 'olympiad';
-  const strongWorlds = WORLDS.filter((w) => p(w.id) >= 0.5).length;
-  if (p('puzzle_forest') >= 0.5 && strongWorlds >= 5) return 'champion';
-  if (p('number_jungle') >= 0.6 && p('volcano_valley') >= 0.6) return 'explorer';
-  if (p('number_jungle') >= 0.6) return 'baby';
-  return 'egg';
+  let stage: Stage = 'egg';
+  for (const r of STAGE_RULES) {
+    if (r.req(state) < 1) break;
+    stage = r.stage;
+  }
+  return stage;
 }
 
-export const STAGE_ORDER: Stage[] = ['egg', 'baby', 'explorer', 'champion', 'olympiad'];
+export const STAGE_ORDER: Stage[] = STAGE_RULES.map((r) => r.stage);
 export const stageIndex = (s: Stage) => STAGE_ORDER.indexOf(s);
 
 /**
@@ -213,27 +235,19 @@ export function displayStage(state: AppState): Stage {
 /** How far the dino is towards its next stage, from 0 to 1. */
 export function stageProgress(state: AppState): { stage: Stage; next: Stage | null; pct: number } {
   const stage = displayStage(state);
-  const p = (w: WorldId) => worldProgress(state, w);
-  const clamp = (x: number) => Math.max(0, Math.min(1, x));
-  const next = STAGE_ORDER[stageIndex(stage) + 1] ?? null;
-  let pct = 1;
-  if (stage === 'egg') pct = p('number_jungle') / 0.6;
-  else if (stage === 'baby') pct = p('volcano_valley') / 0.6;
-  else if (stage === 'explorer') {
-    const strong = WORLDS.filter((w) => p(w.id) >= 0.5).length;
-    pct = Math.min(p('puzzle_forest') / 0.5, strong / 5);
-  } else if (stage === 'champion') {
-    const bestMock = Math.max(0, ...state.mocks.filter((m) => m.kind === 'full').map((m) => m.score / m.maxScore));
-    pct = Math.max(bestMock / 0.75, p('olympiad_castle') / 0.85);
-  }
-  return { stage, next, pct: next ? clamp(pct) : 1 };
+  const nextRule = STAGE_RULES[stageIndex(stage) + 1];
+  if (!nextRule) return { stage, next: null, pct: 1 };
+  return { stage, next: nextRule.stage, pct: Math.max(0, Math.min(1, nextRule.req(state))) };
 }
 
 export const STAGE_INFO: Record<Stage, { name: string; next: string }> = {
   egg: { name: 'Dino Egg', next: 'Master basic number sense in Number Jungle to hatch!' },
-  baby: { name: 'Baby Dino', next: 'Master addition & subtraction in Volcano Valley to grow.' },
-  explorer: { name: 'Explorer Dino', next: 'Master Puzzle Forest reasoning + mixed maths.' },
-  champion: { name: 'Champion Dino', next: 'Complete the Olympiad missions or score 75% in a full mock.' },
+  baby: { name: 'Baby Dino', next: 'Master adding and taking away in Volcano Valley to grow.' },
+  explorer: { name: 'Explorer Dino', next: 'Grow stronger in Dino Nest and Shape Caves.' },
+  adventurer: { name: 'Adventurer Dino', next: 'Grow stronger on Time Mountain and in Treasure Market.' },
+  brave: { name: 'Brave Dino', next: 'Master Puzzle Forest thinking and get strong in 5 worlds.' },
+  champion: { name: 'Champion Dino', next: 'Explore the Olympiad Castle, or score 60% in a full mock.' },
+  super: { name: 'Super Dino', next: 'Win the Olympiad Crystal, or score 75% in a full mock.' },
   olympiad: { name: 'Olympiad Dino', next: 'You reached the top! 👑' },
 };
 

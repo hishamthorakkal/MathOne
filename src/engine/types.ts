@@ -231,7 +231,7 @@ export type DinoId =
   | 'ovi'
   | 'goldrex';
 export type BadgeId = 'great_thinker' | 'pattern_spotter' | 'never_give_up' | 'sharp_eyes' | 'super_explainer';
-export type Stage = 'egg' | 'baby' | 'explorer' | 'champion' | 'olympiad';
+export type Stage = 'egg' | 'baby' | 'explorer' | 'adventurer' | 'brave' | 'champion' | 'super' | 'olympiad';
 
 export interface Settings {
   sound: boolean;

@@ -809,7 +809,9 @@ export function Dino({
   const sp = SPECIES[species] ?? SPECIES.rexy;
   const p: Paint = { c: color, b: belly, d: shade(color, -0.3), far: shade(color, -0.15) };
   // Each stage is visibly bigger than the last.
-  const scale = { egg: 0.78, baby: 0.82, explorer: 0.9, champion: 0.98, olympiad: 1.04 }[stage];
+  const scale = { egg: 0.74, baby: 0.78, explorer: 0.83, adventurer: 0.87, brave: 0.91, champion: 0.95, super: 0.99, olympiad: 1.04 }[stage];
+  const hasCape = stage === 'brave' || stage === 'super' || stage === 'olympiad';
+  const hasMedal = stage === 'champion' || stage === 'super' || stage === 'olympiad';
   const crown = accessory === 'crown' || ((stage === 'olympiad' || species === 'goldrex') && !accessory);
   const { eye, mouth } = sp;
   const origin = (pt: Pt): CSSProperties => ({ transformOrigin: `${pt.x}px ${pt.y}px` });
@@ -827,6 +829,19 @@ export function Dino({
       <g transform={`translate(100 190) scale(${scale}) translate(-100 -190)`}>
         <g transform={sp.wrap}>
           {sp.back?.(p)}
+          {/* Brave, Super and Olympiad Dinos wear a hero cape (behind the body). */}
+          {hasCape && (
+            <g transform={`translate(${sp.pack.x} ${sp.pack.y}) rotate(-12) scale(1.7)`}>
+              <path
+                d="M8 -12 C -12 -10 -26 6 -32 30 C -24 26 -18 30 -12 28 C -10 22 -4 24 0 22 C 0 12 2 2 12 -6 Z"
+                fill={stage === 'olympiad' ? '#7c3aed' : '#e63946'}
+                stroke={stage === 'olympiad' ? '#4c1d95' : '#9d1c27'}
+                strokeWidth="1.6"
+                strokeLinejoin="round"
+              />
+              <path d="M-4 -6 C -12 4 -16 14 -18 24" fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="1.4" strokeLinecap="round" />
+            </g>
+          )}
           {stage === 'explorer' && accessory == null && (
             <rect x={sp.pack.x - 11} y={sp.pack.y - 14} width="22" height="28" rx="6" fill="#f4a261" stroke="#b5651d" strokeWidth="2.5" />
           )}
@@ -860,7 +875,15 @@ export function Dino({
           )}
 
           {/* growth medal */}
-          {(stage === 'champion' || stage === 'olympiad') && (
+          {/* Adventurer Dinos carry a compass badge. */}
+          {stage === 'adventurer' && (
+            <g transform={`translate(${sp.medal.x} ${sp.medal.y})`}>
+              <circle r="8" fill="#e0f2fe" stroke="#0369a1" strokeWidth="2.5" />
+              <path d="M0 -6 L 2.5 0 L 0 6 L -2.5 0 Z" fill="#e63946" />
+              <circle r="1.5" fill="#0369a1" />
+            </g>
+          )}
+          {hasMedal && (
             <g transform={`translate(${sp.medal.x} ${sp.medal.y})`}>
               <path d="M-8 -16 l 8 14 l 8 -14" stroke="#3a86ff" strokeWidth="5" fill="none" />
               <circle className="dino-medal" cx="0" cy="4" r="8" fill="#ffd23f" stroke="#c99a00" strokeWidth="2" />

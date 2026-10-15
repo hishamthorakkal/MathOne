@@ -142,6 +142,26 @@ describe('dino growth', () => {
     expect(displayStage(s)).toBe('baby');
   });
 
+  it('has 8 growth stages earned in order', async () => {
+    const { STAGE_ORDER, stageOf, stageProgress } = await import('./mastery');
+    expect(STAGE_ORDER).toEqual(['egg', 'baby', 'explorer', 'adventurer', 'brave', 'champion', 'super', 'olympiad']);
+    const s = initialState();
+    const all = (w: Parameters<typeof masterWorld>[1]) => masterWorld(s, w);
+    all([...JUNGLE]);
+    all(['addition_no_carry', 'addition_carry', 'subtraction_no_borrow', 'subtraction_borrow', 'missing_number_ops', 'add_sub_word']);
+    expect(stageOf(s)).toBe('explorer');
+    // Time Mountain alone does not skip ahead: Adventurer (Dino Nest + Shape Caves) comes first.
+    all(['clock_reading', 'calendar', 'duration']);
+    expect(stageOf(s)).toBe('explorer');
+    all(['repeated_addition', 'multiplication', 'equal_sharing', 'shapes_2d', 'solids_3d', 'count_shapes', 'symmetry']);
+    expect(stageOf(s)).toBe('adventurer');
+    s.seenStage = 'adventurer';
+    expect(stageProgress(s).next).toBe('brave');
+    // A 76% full mock is part of the Super / Olympiad requirement, but only after the earlier stages.
+    s.mocks.push({ date: '2026-11-20', kind: 'full', score: 38, maxScore: 50, correct: 38, total: 50, seconds: 3000, items: [] });
+    expect(stageOf(s)).toBe('adventurer');
+  });
+
   it('never shrinks back after a stage has been reached', async () => {
     const { displayStage, stageOf } = await import('./mastery');
     const s = initialState();

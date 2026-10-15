@@ -63,7 +63,7 @@ export function Dinos() {
                 <span key={s} style={{ display: 'contents' }}>
                   {i > 0 && <span className="journey-arrow">›</span>}
                   <span className={`journey-step ${reached ? '' : 'journey-locked'} ${s === stage ? 'journey-now' : ''}`}>
-                    <Dino size={34 + i * 9} species={companion.id} color={companion.color} belly={companion.belly} stage={s} mood={s === stage ? 'happy' : 'sleep'} className={s === stage ? '' : 'dino-still'} />
+                    <Dino size={30 + i * 6} species={companion.id} color={companion.color} belly={companion.belly} stage={s} mood={s === stage ? 'happy' : 'sleep'} className={s === stage ? '' : 'dino-still'} />
                     {reached ? STAGE_INFO[s].name.replace(' Dino', '') : '?'}
                   </span>
                 </span>
@@ -86,7 +86,7 @@ export function Dinos() {
       <div className="wardrobe">
         {COSMETICS.map((c) => {
           const owned = state.cosmetics.includes(c.id);
-          const locked = c.id === 'crown' && stage !== 'champion' && stage !== 'olympiad';
+          const locked = c.id === 'crown' && stageIndex(stage) < stageIndex('champion');
           return (
             <div key={c.id} className="ward-item">
               <span className="ward-emoji">{c.emoji}</span>
