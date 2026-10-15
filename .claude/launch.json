@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "5281", "--strictPort"],
       "port": 5281
+    },
+    {
+      "name": "mathosaur-build",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "preview", "--port", "5282", "--strictPort"],
+      "port": 5282
     }
   ]
 }

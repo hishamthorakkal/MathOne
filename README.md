@@ -74,6 +74,11 @@ Open **🔒 Grown-ups** at the bottom of the home screen. Under **Settings** you
 - export or import progress
 - **clear all progress on this device** (with a backup option and a confirmation step)
 
+## Offline and Android
+
+After the first visit the game works fully offline: a service worker saves every file, and the fonts are bundled.
+To publish it on Google Play as a Trusted Web Activity, follow [ANDROID.md](ANDROID.md).
+
 ## Not built yet (from the plan's “later” list)
 
 - Server-side accounts and multiple child profiles (the plan suggests Next.js + Supabase)
