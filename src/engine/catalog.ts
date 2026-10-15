@@ -1,4 +1,4 @@
-import type { BadgeId, DinoId, SkillId, WorldId } from './types';
+import type { BadgeId, DinoId, SkillId, Slot, Stage, WorldId } from './types';
 
 /** Sections of the IMO Class 2 paper (see the official sample paper). */
 export type Section = 'Logical Reasoning' | 'Mathematical Reasoning' | 'Everyday Mathematics';
@@ -297,12 +297,77 @@ export const DINOS: DinoInfo[] = [
 
 export const HATCH_COST = 2;
 
-export const COSMETICS = [
-  { id: 'hat', name: 'Explorer Hat', emoji: '🎩', cost: 2 },
-  { id: 'scarf', name: 'Cosy Scarf', emoji: '🧣', cost: 3 },
-  { id: 'glasses', name: 'Cool Glasses', emoji: '🕶️', cost: 4 },
-  { id: 'crown', name: 'Olympiad Crown', emoji: '👑', cost: 6 },
-] as const;
+export interface Cosmetic {
+  id: string;
+  name: string;
+  emoji: string;
+  slot: Slot;
+  cost: number;
+  /** Only for dinos at this growth stage or higher. */
+  minStage?: Stage;
+}
+
+/** Wardrobe: wear one item per spot (head, eyes, neck, back) at the same time. */
+export const COSMETICS: Cosmetic[] = [
+  // head
+  { id: 'hat', name: 'Explorer Hat', emoji: '🤠', slot: 'head', cost: 2 },
+  { id: 'cap', name: 'Cool Cap', emoji: '🧢', slot: 'head', cost: 3 },
+  { id: 'beanie', name: 'Comfy Beanie', emoji: '🧶', slot: 'head', cost: 3 },
+  { id: 'flowers', name: 'Flower Crown', emoji: '🌸', slot: 'head', cost: 3 },
+  { id: 'headphones', name: 'Headphones', emoji: '🎧', slot: 'head', cost: 4 },
+  { id: 'crown', name: 'Olympiad Crown', emoji: '👑', slot: 'head', cost: 6, minStage: 'champion' },
+  // eyes
+  { id: 'glasses', name: 'Cool Glasses', emoji: '🕶️', slot: 'eyes', cost: 4 },
+  { id: 'starshades', name: 'Star Shades', emoji: '⭐', slot: 'eyes', cost: 4 },
+  { id: 'heartglasses', name: 'Heart Glasses', emoji: '💗', slot: 'eyes', cost: 4 },
+  { id: 'goggles', name: 'Smart Goggles', emoji: '🥽', slot: 'eyes', cost: 5 },
+  // neck
+  { id: 'bowtie', name: 'Bow Tie', emoji: '🎀', slot: 'neck', cost: 2 },
+  { id: 'scarf', name: 'Cosy Scarf', emoji: '🧣', slot: 'neck', cost: 3 },
+  { id: 'bandana', name: 'Bandana', emoji: '🔺', slot: 'neck', cost: 3 },
+  { id: 'necklace', name: 'Star Necklace', emoji: '📿', slot: 'neck', cost: 4 },
+  // back
+  { id: 'wings', name: 'Fairy Wings', emoji: '🦋', slot: 'back', cost: 5 },
+  { id: 'guitar', name: 'Rock Guitar', emoji: '🎸', slot: 'back', cost: 5 },
+  { id: 'jetpack', name: 'Jet Pack', emoji: '🚀', slot: 'back', cost: 6 },
+];
+
+export const SLOTS: { id: Slot; name: string; emoji: string }[] = [
+  { id: 'head', name: 'Head', emoji: '🧢' },
+  { id: 'eyes', name: 'Eyes', emoji: '🕶️' },
+  { id: 'neck', name: 'Neck', emoji: '🎀' },
+  { id: 'back', name: 'Back', emoji: '🎒' },
+];
+
+/** Bonus crystals: won for good learning habits, never by luck. Each gives +2 eggs. */
+export interface BonusCrystal {
+  id: string;
+  name: string;
+  color: string;
+  how: string;
+  rule:
+    | { kind: 'mock'; score: number }
+    | { kind: 'camps'; count: number }
+    | { kind: 'badge'; badge: BadgeId; count: number }
+    | { kind: 'realWorld'; count: number }
+    | { kind: 'days'; count: number }
+    | { kind: 'dinos'; count: number }
+    | { kind: 'worldCrystals'; count: number };
+  legendary?: boolean;
+}
+
+export const BONUS_CRYSTAL_EGGS = 2;
+
+export const BONUS_CRYSTALS: BonusCrystal[] = [
+  { id: 'star', name: 'Star Crystal', color: '#facc15', how: 'Score 60% in a full mock', rule: { kind: 'mock', score: 0.6 } },
+  { id: 'camp', name: 'Camp Crystal', color: '#38bdf8', how: 'Finish Training Camp 3 times', rule: { kind: 'camps', count: 3 } },
+  { id: 'nevergiveup', name: 'Never Give Up Crystal', color: '#f43f5e', how: '"Never Give Up" badge 10 times', rule: { kind: 'badge', badge: 'never_give_up', count: 10 } },
+  { id: 'explorer', name: 'Explorer Crystal', color: '#22c55e', how: '5 Real-World Missions', rule: { kind: 'realWorld', count: 5 } },
+  { id: 'sunshine', name: 'Sunshine Crystal', color: '#fb923c', how: 'Play on 20 Adventure Days', rule: { kind: 'days', count: 20 } },
+  { id: 'dinofriend', name: 'Dino Friend Crystal', color: '#a855f7', how: 'Find 10 dinos', rule: { kind: 'dinos', count: 10 } },
+  { id: 'thinker', name: 'Thinker Crystal', color: '#6366f1', how: '"Great Thinker" badge 10 times', rule: { kind: 'badge', badge: 'great_thinker', count: 10 } },
+  { id: 'rainbow', name: 'Rainbow Crystal', color: 'rainbow', how: 'Win all 8 world crystals', rule: { kind: 'worldCrystals', count: 8 }, legendary: true },
+];
 
 export const BADGES: Record<BadgeId, { name: string; emoji: string; desc: string }> = {
   great_thinker: { name: 'Great Thinker', emoji: '🧠', desc: 'Solved a thinking challenge' },

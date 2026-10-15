@@ -1,4 +1,5 @@
-import { HATCH_COST } from './catalog';
+import { BONUS_CRYSTAL_EGGS, HATCH_COST, type BonusCrystal } from './catalog';
+import { awardGem, checkBonusCrystals } from './collection';
 import { today } from './dates';
 import { lifetimeEggs, readyToHatch, recordOutcome, worldProgress } from './mastery';
 import type { MissionPlan, SegmentKind } from './session';
@@ -42,6 +43,7 @@ export function applyQuestion(
   ctx: { segment: SegmentKind; strategy?: string; independentStreak: number },
 ): BadgeId[] {
   recordOutcome(draft, q.skill, q.difficulty, outcome, seconds, mode);
+  awardGem(draft, q.skill); // a skill gem the moment a skill is mastered
   const s = STARS[outcome];
   draft.stars += s;
   draft.days[today()].stars += s;
@@ -66,6 +68,7 @@ export interface MissionResult {
   bossDefeated: boolean;
   crystal: WorldId | null;
   newlyReady: DinoId[];
+  bonusCrystals: BonusCrystal[];
 }
 
 export function completeMission(
@@ -110,7 +113,8 @@ export function completeMission(
   const newlyReady = readyToHatch(draft)
     .map((d) => d.id)
     .filter((id) => !readyBefore.includes(id));
-  return { stars: stats.stars + bonus, eggs, bossDefeated, crystal, newlyReady };
+  const bonusCrystals = checkBonusCrystals(draft);
+  return { stars: stats.stars + bonus, eggs: eggs + bonusCrystals.length * BONUS_CRYSTAL_EGGS, bossDefeated, crystal, newlyReady, bonusCrystals };
 }
 
 /** Crystals can also be earned later, once mastery catches up after the boss. */
@@ -132,6 +136,7 @@ export function hatch(draft: AppState, id: DinoId): boolean {
   if (!readyToHatch(draft).some((d) => d.id === id)) return false;
   draft.eggs -= HATCH_COST;
   draft.hatched.push(id);
+  checkBonusCrystals(draft); // Dino Friend crystal
   return true;
 }
 
@@ -140,6 +145,7 @@ export function markRealWorldDone(draft: AppState, date = today()): boolean {
   const done = draft.realWorldDone ?? [];
   if (done.includes(date)) return false;
   draft.realWorldDone = [...done, date];
+  checkBonusCrystals(draft); // Explorer crystal
   return true;
 }
 

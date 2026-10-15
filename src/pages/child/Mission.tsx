@@ -18,6 +18,8 @@ import {
 } from '../../engine/rewards';
 import { buildCamp, buildMission, followUpFor, offlineMission, SEGMENTS, tomorrowPreview, type MissionItem } from '../../engine/session';
 import { getState, update, useAppState } from '../../engine/store';
+import { gemsOf } from '../../engine/collection';
+import { SKILL } from '../../engine/catalog';
 import type { BadgeId, Outcome, WorldId } from '../../engine/types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Dino } from '../../components/Dino';
@@ -55,7 +57,7 @@ export function MissionPage({ kind }: { kind: 'daily' | 'camp' }) {
 function Blocked({ reason, companion }: { reason: 'sleepy' | 'clear'; companion: ReturnType<typeof useCompanion> }) {
   return (
     <div className="screen center-col">
-      <Dino size={200} species={companion.id} color={companion.color} belly={companion.belly} mood={reason === 'sleepy' ? 'sleep' : 'cheer'} stage={companion.stage} accessory={companion.accessory} />
+      <Dino size={200} species={companion.id} color={companion.color} belly={companion.belly} mood={reason === 'sleepy' ? 'sleep' : 'cheer'} stage={companion.stage} outfit={companion.outfit} />
       {reason === 'sleepy' ? (
         <>
           <h1>Dino is sleepy 😴</h1>
@@ -86,6 +88,7 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
   const [badges, setBadges] = useState<BadgeId[]>([]);
   const [strategyAsked, setStrategyAsked] = useState(false);
   const [result, setResult] = useState<MissionResult | null>(null);
+  const [gemsAtStart] = useState(() => gemsOf(getState()));
   const world = WORLD[plan.world];
   const item = items[idx];
   const prevSegment = idx > 0 ? items[idx - 1].segment : null;
@@ -150,7 +153,7 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
         <div className="world-badge">
           {world.emoji} {plan.kind === 'camp' ? 'Dino Training Camp' : world.name}
         </div>
-        <Dino size={190} species={companion.id} color={companion.color} belly={companion.belly} mood={introLine === 0 ? 'happy' : 'think'} stage={companion.stage} accessory={companion.accessory} />
+        <Dino size={190} species={companion.id} color={companion.color} belly={companion.belly} mood={introLine === 0 ? 'happy' : 'think'} stage={companion.stage} outfit={companion.outfit} />
         <div className="speech">{plan.intro[introLine]}</div>
         {introLine < plan.intro.length - 1 ? (
           <button type="button" className="btn btn-primary btn-big" onClick={() => setIntroLine((l) => l + 1)} autoFocus>
@@ -189,7 +192,7 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
   }
 
   if (stage === 'summary' && result) {
-    return <Summary plan={plan} stats={stats} badges={badges} result={result} />;
+    return <Summary plan={plan} stats={stats} badges={badges} result={result} gemsAtStart={gemsAtStart} />;
   }
 
   const bossItems = items.filter((i) => i.segment === 'boss').length;
@@ -249,11 +252,13 @@ function Summary({
   stats,
   badges,
   result,
+  gemsAtStart,
 }: {
   plan: NonNullable<ReturnType<typeof buildMission>>;
   stats: { seconds: number; questions: number; independent: number; stars: number };
   badges: BadgeId[];
   result: MissionResult;
+  gemsAtStart: string[];
 }) {
   const state = useAppState();
   const companion = useCompanion();
@@ -272,7 +277,7 @@ function Summary({
   return (
     <div className="screen summary center-col" style={{ ['--world' as string]: world.color }}>
       <div onAnimationEnd={() => setSleepy(true)} className="summary-dino">
-        <Dino size={170} species={companion.id} color={companion.color} belly={companion.belly} mood={sleepy ? 'sleep' : 'cheer'} stage={companion.stage} accessory={companion.accessory} />
+        <Dino size={170} species={companion.id} color={companion.color} belly={companion.belly} mood={sleepy ? 'sleep' : 'cheer'} stage={companion.stage} outfit={companion.outfit} />
       </div>
       <h1>{plan.kind === 'camp' ? 'Training complete! 💪' : plan.boss ? `You beat ${world.boss.name}! 🎉` : plan.light ? 'You are ready! 🌟' : 'Mission complete! 🎉'}</h1>
       <div className="reward-row">
@@ -296,6 +301,19 @@ function Summary({
         <div className="banner-note">
           🥚 A new egg is ready to hatch: {result.newlyReady.map((id) => DINOS.find((d) => d.id === id)!.name).join(', ')}! Visit My Dinos.
         </div>
+      )}
+      {(() => {
+        const newGems = gemsOf(state).filter((g) => !gemsAtStart.includes(g));
+        return newGems.length ? (
+          <Link to="/crystals" className="banner-note crystal-note">
+            ✨ New gem{newGems.length > 1 ? 's' : ''}! You mastered {newGems.map((g) => SKILL[g].name).join(', ')}. 💎
+          </Link>
+        ) : null;
+      })()}
+      {result.bonusCrystals.length > 0 && (
+        <Link to="/crystals" className="banner-note crystal-note">
+          💎 You won the {result.bonusCrystals.map((b) => b.name).join(' and ')}! +{result.bonusCrystals.length * 2} 🥚
+        </Link>
       )}
       {uniqueBadges.length > 0 && (
         <div className="badges-earned">

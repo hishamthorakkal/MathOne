@@ -45,6 +45,7 @@ Content follows the IMO Class 2 syllabus and the official sample paper:
 | Spec area | Where |
 |---|---|
 | Story, 8 worlds, crystals, Professor Zero | `src/engine/catalog.ts`, Adventure Map |
+| Crystal Cave: world crystals fill with skill gems (one per mastered skill), plus 8 bonus crystals for good habits (+2 eggs each) | `src/pages/child/CrystalCave.tsx`, `src/engine/collection.ts` |
 | Daily loop: story → mini-games → recall → HOTS → treasure / mini-boss → reward → stop | `src/engine/session.ts`, `src/pages/child/Mission.tsx` |
 | 37 skills × 5 invisible difficulty levels, procedurally generated | `src/engine/generators.ts` |
 | Mini-games: Dino Run, Feed the Dino, Egg Match, Number Train, Treasure Shop, Pattern Cave, plus Mystery Dino, Lava Crossing, Dino Calculator, picture choice | `src/components/games/Games.tsx` |
@@ -52,7 +53,7 @@ Content follows the IMO Class 2 syllabus and the official sample paper:
 | Mastery model (independent 1.0 / retry 0.8 / hint 0.6 / guided 0.35, recency-weighted) | `src/engine/mastery.ts` |
 | Anti-frustration (−1 level after 2 errors, +1 after 3 independent) and confidence mix | `mastery.ts`, `session.ts` |
 | Spaced-repetition revision queue → Training Camp | `mastery.ts`, `/camp` |
-| Stars + Dino Eggs only; 18 species-shaped dinos to discover in the Dino Discovery Book (clues, footprints at 75%, fact cards with Dino Maths), hatching, evolution, wardrobe, badges | `src/components/DiscoveryBook.tsx`, `src/components/Dino.tsx`, `src/engine/catalog.ts` |
+| Stars + Dino Eggs only; 18 species-shaped dinos to discover in the Dino Discovery Book (clues, footprints at 75%, fact cards with Dino Maths), hatching, evolution, mix-and-match wardrobe (head, eyes, neck, back), badges | `src/components/DiscoveryBook.tsx`, `src/components/WardrobePanel.tsx`, `src/components/Dino.tsx`, `src/engine/catalog.ts` |
 | Read to Me (speech synthesis) and highlighted clues | `src/components/RichText.tsx` |
 | “How did you solve it?” prompts (occasional) | `QuestionPlayer.tsx` |
 | Adventure Days (no fragile streaks), Real-World Missions, Parent Challenges | Mission summary |

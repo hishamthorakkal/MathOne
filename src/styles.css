@@ -3235,3 +3235,187 @@ button.dcard-body {
   font-size: 2rem;
   height: auto;
 }
+
+/* ---------- mix-and-match wardrobe ---------- */
+.wardrobe-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.wardrobe-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 24px;
+  padding: 12px;
+  position: sticky;
+  top: 10px;
+}
+
+.outfit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.outfit-chip {
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--soft);
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.outfit-on {
+  background: #e8f8ec;
+  color: var(--primary-dark);
+}
+
+.wardrobe-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.ward-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.ward-wearing {
+  border-color: #9fd8ae;
+  background: #f6fcf7;
+}
+
+.crystal-link {
+  margin-top: 20px;
+}
+
+.dino .jet-flame {
+  transform-box: fill-box;
+  transform-origin: top;
+  animation: flame 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes flame {
+  to { transform: scaleY(0.75); }
+}
+
+@media (max-width: 640px) {
+  .wardrobe-layout {
+    grid-template-columns: 1fr;
+  }
+  .wardrobe-preview {
+    position: static;
+  }
+}
+
+/* ---------- Crystal Cave ---------- */
+.center-text {
+  text-align: center;
+}
+
+.world-crystals {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.crystal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.crystal-won {
+  border-color: var(--world);
+}
+
+.crystal-fill {
+  transition: y 1s ease, height 1s ease;
+}
+
+.gem-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.gem {
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  background: #ece6d9;
+  border: 1.5px solid #cfc6b4;
+}
+
+.gem-on {
+  background: var(--world);
+  border-color: color-mix(in srgb, var(--world) 65%, #000);
+}
+
+.bonus-crystals {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.bonus-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: #fff;
+  border: 3px solid var(--line);
+  border-radius: 18px;
+}
+
+.bonus-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.bonus-won {
+  border-color: var(--gem);
+}
+
+.bonus-done {
+  color: var(--primary-dark);
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+a.crystal-count {
+  text-decoration: none;
+  color: var(--ink);
+}
+
+a.banner-note {
+  text-decoration: none;
+  color: var(--ink);
+}

@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BADGES, COSMETICS, WORLDS, type DinoInfo } from '../../engine/catalog';
+import { BADGES, WORLDS, type DinoInfo } from '../../engine/catalog';
+import { gemsOf } from '../../engine/collection';
 import { STAGE_INFO, STAGE_ORDER, stageIndex, stageProgress } from '../../engine/mastery';
 import { hatch } from '../../engine/rewards';
 import { update, useAppState } from '../../engine/store';
 import type { BadgeId, DinoId } from '../../engine/types';
 import { Dino } from '../../components/Dino';
 import { DiscoveryBook } from '../../components/DiscoveryBook';
+import { WardrobePanel } from '../../components/WardrobePanel';
 import { EvolutionOverlay, GrowthMeter, growthSteps } from '../../components/Evolution';
 import { useCompanion } from '../../components/useCompanion';
 
@@ -36,7 +38,7 @@ export function Dinos() {
       </header>
 
       {replay && (
-        <EvolutionOverlay steps={growthSteps('egg', stage)} dino={{ species: companion.id, name: companion.name, color: companion.color, belly: companion.belly, accessory: state.equipped }} onDone={() => setReplay(false)} />
+        <EvolutionOverlay steps={growthSteps('egg', stage)} dino={{ species: companion.id, name: companion.name, color: companion.color, belly: companion.belly, outfit: companion.outfit }} onDone={() => setReplay(false)} />
       )}
       {hatching && (
         <EvolutionOverlay
@@ -51,7 +53,7 @@ export function Dinos() {
       )}
 
       <section className="companion-card">
-        <Dino size={180} species={companion.id} color={companion.color} belly={companion.belly} stage={stage} accessory={state.equipped} mood="happy" />
+        <Dino size={180} species={companion.id} color={companion.color} belly={companion.belly} stage={stage} outfit={companion.outfit} mood="happy" />
         <div>
           <h2>
             {companion.name} · {STAGE_INFO[stage].name}
@@ -82,55 +84,11 @@ export function Dinos() {
 
       <DiscoveryBook state={state} selected={factFor} onSelect={setFactFor} onHatch={doHatch} />
 
-      <h2 className="section-title">Dino Wardrobe</h2>
-      <div className="wardrobe">
-        {COSMETICS.map((c) => {
-          const owned = state.cosmetics.includes(c.id);
-          const locked = c.id === 'crown' && stageIndex(stage) < stageIndex('champion');
-          return (
-            <div key={c.id} className="ward-item">
-              <span className="ward-emoji">{c.emoji}</span>
-              <span>{c.name}</span>
-              {owned ? (
-                <button
-                  type="button"
-                  className={`btn ${state.equipped === c.id ? 'btn-primary' : 'btn-soft'}`}
-                  onClick={() => update((s) => void (s.equipped = s.equipped === c.id ? null : c.id))}
-                >
-                  {state.equipped === c.id ? 'Wearing' : 'Wear'}
-                </button>
-              ) : locked ? (
-                <span className="small">Champion Dinos only</span>
-              ) : (
-                <button
-                  type="button"
-                  className="btn btn-soft"
-                  disabled={state.eggs < c.cost}
-                  onClick={() =>
-                    update((s) => {
-                      if (s.eggs < c.cost) return;
-                      s.eggs -= c.cost;
-                      s.cosmetics.push(c.id);
-                      s.equipped = c.id;
-                    })
-                  }
-                >
-                  🥚 {c.cost}
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      <WardrobePanel state={state} />
 
-      <h2 className="section-title">Math Crystals</h2>
-      <div className="crystals">
-        {WORLDS.map((w) => (
-          <span key={w.id} className={`crystal ${state.crystals.includes(w.id) ? 'crystal-on' : ''}`} style={{ ['--world' as string]: w.color }} title={w.crystal}>
-            {w.crystal.split(' ')[0]}
-          </span>
-        ))}
-      </div>
+      <Link to="/crystals" className="new-egg-banner crystal-link">
+        💎 Crystal Cave: {state.crystals.length} of {WORLDS.length} world crystals · {gemsOf(state).length} skill gems · {(state.bonusCrystals ?? []).length} bonus crystals ▶
+      </Link>
 
       <h2 className="section-title">Badges</h2>
       <div className="badge-shelf">

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { DinoId, Stage } from '../engine/types';
+import { COSMETICS } from '../engine/catalog';
+import type { DinoId, Outfit, Stage } from '../engine/types';
 
 export type Mood = 'happy' | 'cheer' | 'think' | 'sleep' | 'oops';
 
@@ -9,6 +10,9 @@ interface Props {
   belly?: string;
   mood?: Mood;
   stage?: Stage;
+  /** Mix-and-match outfit (one item per spot). */
+  outfit?: Outfit | null;
+  /** A single item (older call sites); put in its spot. */
   accessory?: string | null;
   size?: number;
   className?: string;
@@ -794,6 +798,199 @@ const SPECIES: Record<DinoId, Species> = {
   },
 };
 
+
+// ---------- wardrobe items (one per spot) ----------
+
+const starPoints = (cx: number, cy: number, r: number) =>
+  Array.from({ length: 10 }, (_, i) => {
+    const a = (Math.PI / 5) * i - Math.PI / 2;
+    const rr = i % 2 ? r * 0.45 : r;
+    return `${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`;
+  }).join(' ');
+
+function HeadItem({ id, sp }: { id: string; sp: Species }) {
+  const t = `translate(${sp.hat.x} ${sp.hat.y}) scale(${sp.hat.s * 1.3})`;
+  switch (id) {
+    case 'hat':
+      return (
+        <g transform={t}>
+          <ellipse rx="28" ry="6" fill="#8d5a2b" />
+          <path d="M-17 0 q 2 -26 17 -26 q 15 0 17 26 Z" fill="#a86b32" />
+          <rect x="-17" y="-8" width="34" height="5" fill="#5a3a1a" />
+        </g>
+      );
+    case 'cap':
+      return (
+        <g transform={t}>
+          <path d="M-19 2 Q -19 -24 2 -24 Q 21 -24 21 2 Z" fill="#3b82f6" stroke="#1e3a8a" strokeWidth="2.5" />
+          <path d="M15 0 Q 32 -2 40 4 Q 28 8 13 5 Z" fill="#1e3a8a" />
+          <circle cx="2" cy="-24" r="2.5" fill="#1e3a8a" />
+          <polygon points={starPoints(2, -11, 6)} fill="#fde047" />
+        </g>
+      );
+    case 'headphones':
+      return (
+        <g transform={t}>
+          <path d="M-20 12 Q -22 -26 2 -26 Q 26 -26 24 12" fill="none" stroke="#111827" strokeWidth="5" strokeLinecap="round" />
+          <rect x="-26" y="4" width="14" height="20" rx="6" fill="#ef4444" stroke="#7f1d1d" strokeWidth="2" />
+          <rect x="-23" y="8" width="8" height="12" rx="3" fill="#fecaca" />
+        </g>
+      );
+    case 'beanie':
+      return (
+        <g transform={t}>
+          <path d="M-19 2 Q -19 -24 0 -24 Q 19 -24 19 2 Z" fill="#f97316" stroke="#9a3412" strokeWidth="2.5" />
+          <path d="M-15 -12 H 15 M -17 -4 H 17" stroke="#fdba74" strokeWidth="3" />
+          <rect x="-21" y="-2" width="42" height="8" rx="4" fill="#ea580c" stroke="#9a3412" strokeWidth="2" />
+          <circle cx="0" cy="-27" r="6" fill="#fff" stroke="#d1d5db" strokeWidth="1.5" />
+        </g>
+      );
+    case 'flowers':
+      return (
+        <g transform={t}>
+          <path d="M-20 0 Q 0 -8 20 0" fill="none" stroke="#4d7c0f" strokeWidth="3" />
+          {[-16, -6, 4, 14].map((x, i) => (
+            <g key={x}>
+              <circle cx={x} cy={-4 - (i % 2) * 2} r="6" fill={['#f472b6', '#fbbf24', '#a78bfa', '#fb7185'][i]} stroke="#fff" strokeWidth="1.5" />
+              <circle cx={x} cy={-4 - (i % 2) * 2} r="2" fill="#fef3c7" />
+            </g>
+          ))}
+        </g>
+      );
+    case 'crown':
+      return (
+        <g className="dino-crown" transform={t}>
+          <path d="M-18 0 l 5 -22 l 8 13 l 5 -17 l 5 17 l 8 -13 l 5 22 Z" fill="#ffd23f" stroke="#c99a00" strokeWidth="2.5" strokeLinejoin="round" />
+          <path className="crown-sparkle" d="M20 -30 l 2 6 l 6 2 l -6 2 l -2 6 l -2 -6 l -6 -2 l 6 -2 Z" fill="#fff6b0" />
+        </g>
+      );
+    default:
+      return null;
+  }
+}
+
+function EyeItem({ id, eye }: { id: string; eye: Pt & { r: number } }) {
+  const { x, y, r } = eye;
+  switch (id) {
+    case 'glasses':
+      return (
+        <g stroke="#111" strokeWidth="3">
+          <path d={`M${x - r - 3} ${y - 1} l -14 -4`} fill="none" />
+          <circle cx={x} cy={y} r={r + 3} fill="rgba(30,30,60,0.75)" />
+        </g>
+      );
+    case 'starshades':
+      return (
+        <>
+          <path d={`M${x - r - 3} ${y - 1} l -14 -4`} stroke="#111" strokeWidth="3" />
+          <polygon points={starPoints(x, y, r + 7)} fill="rgba(30,30,60,0.8)" stroke="#facc15" strokeWidth="3" strokeLinejoin="round" />
+        </>
+      );
+    case 'heartglasses': {
+      const k = r + 4;
+      return (
+        <>
+          <path d={`M${x - k - 1} ${y - 2} l -12 -4`} stroke="#be185d" strokeWidth="3" />
+          <path
+            d={`M${x} ${y + k} C ${x - k * 1.6} ${y} ${x - k * 0.8} ${y - k * 1.1} ${x} ${y - k * 0.35} C ${x + k * 0.8} ${y - k * 1.1} ${x + k * 1.6} ${y} ${x} ${y + k} Z`}
+            fill="rgba(236,72,153,0.55)"
+            stroke="#be185d"
+            strokeWidth="3"
+          />
+        </>
+      );
+    }
+    case 'goggles':
+      return (
+        <>
+          <path d={`M${x - r - 4} ${y} l -16 -2`} stroke="#334155" strokeWidth="4" />
+          <rect x={x - r - 5} y={y - r - 3} width={r * 2 + 14} height={r * 2 + 6} rx={r} fill="rgba(34,211,238,0.55)" stroke="#0e7490" strokeWidth="3" />
+          <path d={`M${x - r} ${y - r * 0.4} l ${r} -2`} stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+        </>
+      );
+    default:
+      return null;
+  }
+}
+
+function NeckItem({ id, sp }: { id: string; sp: Species }) {
+  const t = `translate(${sp.scarf.x} ${sp.scarf.y}) rotate(${sp.scarf.rot}) scale(1.35)`;
+  switch (id) {
+    case 'scarf':
+      return (
+        <g transform={t} fill="#e63946" stroke="#9d1c27" strokeWidth="2">
+          <rect x="-15" y="-6" width="30" height="12" rx="6" />
+          <path d="M4 4 l 6 22 l 8 -4 l -4 -18 Z" />
+        </g>
+      );
+    case 'bowtie':
+      return (
+        <g transform={t} stroke="#4c1d95" strokeWidth="2" strokeLinejoin="round">
+          <path d="M0 0 L -14 -9 L -14 9 Z" fill="#8b5cf6" />
+          <path d="M0 0 L 14 -9 L 14 9 Z" fill="#8b5cf6" />
+          <circle r="4" fill="#c4b5fd" />
+        </g>
+      );
+    case 'necklace':
+      return (
+        <g transform={t}>
+          <path d="M-14 -4 Q 0 12 14 -4" fill="none" stroke="#eab308" strokeWidth="2.5" strokeDasharray="2 2" />
+          <polygon points={starPoints(0, 10, 7)} fill="#fde047" stroke="#a16207" strokeWidth="1.5" />
+        </g>
+      );
+    case 'bandana':
+      return (
+        <g transform={t}>
+          <path d="M-15 -5 L 15 -5 L 0 16 Z" fill="#14b8a6" stroke="#0f766e" strokeWidth="2" strokeLinejoin="round" />
+          <circle cx="-5" cy="0" r="1.6" fill="#fff" />
+          <circle cx="5" cy="0" r="1.6" fill="#fff" />
+          <circle cx="0" cy="7" r="1.6" fill="#fff" />
+        </g>
+      );
+    default:
+      return null;
+  }
+}
+
+function BackItem({ id, sp }: { id: string; sp: Species }) {
+  const t = `translate(${sp.pack.x - 8} ${sp.pack.y - 10}) scale(1.6)`;
+  switch (id) {
+    case 'jetpack':
+      return (
+        <g transform={t}>
+          <g stroke="#334155" strokeWidth="2.5" strokeLinejoin="round">
+            <rect x="-22" y="-20" width="16" height="34" rx="7" fill="#94a3b8" />
+            <rect x="-6" y="-20" width="16" height="34" rx="7" fill="#cbd5e1" />
+          </g>
+          <path className="jet-flame" d="M-18 14 L -14 30 L -10 14 Z M -2 14 L 2 32 L 6 14 Z" fill="#f97316" stroke="#c2410c" strokeWidth="1.5" />
+          <path d="M-16 14 L -14 22 L -12 14 Z M 0 14 L 2 24 L 4 14 Z" fill="#fde047" />
+        </g>
+      );
+    case 'wings':
+      return (
+        <g transform={t} className="fairy-wings">
+          <g stroke="#a855f7" strokeWidth="2" opacity="0.9">
+            <path d="M0 0 C -10 -40 -44 -44 -40 -14 C -38 -2 -18 2 0 0 Z" fill="rgba(216,180,254,0.75)" />
+            <path d="M0 0 C -24 4 -36 22 -22 30 C -12 34 -4 18 0 0 Z" fill="rgba(251,207,232,0.8)" />
+          </g>
+        </g>
+      );
+    case 'guitar':
+      return (
+        <g transform={`${t} scale(0.9)`}>
+          <g transform="rotate(-35)" stroke="#7c2d12" strokeWidth="2.5" strokeLinejoin="round">
+            <rect x="-3" y="-44" width="6" height="34" fill="#92400e" />
+            <rect x="-6" y="-50" width="12" height="9" rx="2" fill="#78350f" />
+            <path d="M0 -12 C -16 -12 -18 2 -12 8 C -18 16 -12 30 0 30 C 12 30 18 16 12 8 C 18 2 16 -12 0 -12 Z" fill="#ef4444" />
+            <circle cx="0" cy="10" r="4" fill="#7f1d1d" />
+          </g>
+        </g>
+      );
+    default:
+      return null;
+  }
+}
+
 /** Friendly SVG dinosaur companion, drawn as its real species. */
 export function Dino({
   species = 'rexy',
@@ -801,6 +998,7 @@ export function Dino({
   belly = '#c5e8a5',
   mood = 'happy',
   stage = 'baby',
+  outfit = null,
   accessory = null,
   size = 160,
   className = '',
@@ -812,7 +1010,10 @@ export function Dino({
   const scale = { egg: 0.74, baby: 0.78, explorer: 0.83, adventurer: 0.87, brave: 0.91, champion: 0.95, super: 0.99, olympiad: 1.04 }[stage];
   const hasCape = stage === 'brave' || stage === 'super' || stage === 'olympiad';
   const hasMedal = stage === 'champion' || stage === 'super' || stage === 'olympiad';
-  const crown = accessory === 'crown' || ((stage === 'olympiad' || species === 'goldrex') && !accessory);
+  const single = COSMETICS.find((c) => c.id === accessory);
+  const wear: Outfit = outfit ?? (single ? { [single.slot]: single.id } : {});
+  // The Olympiad crown appears by itself unless the dino is wearing something else on its head.
+  const autoCrown = (stage === 'olympiad' || species === 'goldrex') && !wear.head;
   const { eye, mouth } = sp;
   const origin = (pt: Pt): CSSProperties => ({ transformOrigin: `${pt.x}px ${pt.y}px` });
 
@@ -842,7 +1043,8 @@ export function Dino({
               <path d="M-4 -6 C -12 4 -16 14 -18 24" fill="none" stroke="rgba(0,0,0,0.18)" strokeWidth="1.4" strokeLinecap="round" />
             </g>
           )}
-          {stage === 'explorer' && accessory == null && (
+          {wear.back && <BackItem id={wear.back} sp={sp} />}
+          {stage === 'explorer' && !wear.back && (
             <rect x={sp.pack.x - 11} y={sp.pack.y - 14} width="22" height="28" rx="6" fill="#f4a261" stroke="#b5651d" strokeWidth="2.5" />
           )}
           <g className={mood === 'sleep' ? '' : sp.flap ? 'dino-flap' : 'dino-tail'} style={origin(sp.tailOrigin)} stroke={p.d} {...OUTLINE}>
@@ -894,31 +1096,10 @@ export function Dino({
           )}
 
           {/* wardrobe */}
-          {accessory === 'scarf' && (
-            <g transform={`translate(${sp.scarf.x} ${sp.scarf.y}) rotate(${sp.scarf.rot})`} fill="#e63946" stroke="#9d1c27" strokeWidth="2">
-              <rect x="-15" y="-6" width="30" height="12" rx="6" />
-              <path d="M4 4 l 6 22 l 8 -4 l -4 -18 Z" />
-            </g>
-          )}
-          {accessory === 'glasses' && (
-            <g stroke="#111" strokeWidth="3">
-              <path d={`M${eye.x - eye.r - 3} ${eye.y - 1} l -14 -4`} fill="none" />
-              <circle cx={eye.x} cy={eye.y} r={eye.r + 3} fill="rgba(30,30,60,0.75)" />
-            </g>
-          )}
-          {accessory === 'hat' && (
-            <g transform={`translate(${sp.hat.x} ${sp.hat.y}) scale(${sp.hat.s})`}>
-              <ellipse cx="0" cy="0" rx="28" ry="6" fill="#8d5a2b" />
-              <path d="M-17 0 q 2 -26 17 -26 q 15 0 17 26 Z" fill="#a86b32" />
-              <rect x="-17" y="-8" width="34" height="5" fill="#5a3a1a" />
-            </g>
-          )}
-          {crown && (
-            <g className="dino-crown" transform={`translate(${sp.hat.x} ${sp.hat.y}) scale(${sp.hat.s})`}>
-              <path d="M-18 0 l 5 -22 l 8 13 l 5 -17 l 5 17 l 8 -13 l 5 22 Z" fill="#ffd23f" stroke="#c99a00" strokeWidth="2.5" strokeLinejoin="round" />
-              <path className="crown-sparkle" d="M20 -30 l 2 6 l 6 2 l -6 2 l -2 6 l -2 -6 l -6 -2 l 6 -2 Z" fill="#fff6b0" />
-            </g>
-          )}
+          {wear.neck && <NeckItem id={wear.neck} sp={sp} />}
+          {wear.eyes && <EyeItem id={wear.eyes} eye={eye} />}
+          {wear.head && <HeadItem id={wear.head} sp={sp} />}
+          {autoCrown && <HeadItem id="crown" sp={sp} />}
         </g>
       </g>
 

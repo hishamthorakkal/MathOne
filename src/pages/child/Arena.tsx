@@ -5,6 +5,7 @@ import { daysToExam, today } from '../../engine/dates';
 import { masteryOf, recordOutcome } from '../../engine/mastery';
 import { classifyMistake } from '../../engine/misconceptions';
 import { logMistakes } from '../../engine/rewards';
+import { checkBonusCrystals } from '../../engine/collection';
 import { buildMock, MOCK_SHAPE, type MockQuestion } from '../../engine/session';
 import { getState, update } from '../../engine/store';
 import type { MockQuestionResult, MockResult, SkillId } from '../../engine/types';
@@ -130,6 +131,7 @@ function Exam({ kind, qs, onSubmit }: { kind: Kind; qs: MockQuestion[]; onSubmit
         if (it.answered) recordOutcome(d, it.skill, qs[i].q.difficulty, it.correct ? 'independent' : 'incorrect', it.seconds, 'arena');
         if (it.answered && !it.correct) logMistakes(d, qs[i].q, [{ picked: answers[i]!, tag: classifyMistake(qs[i].q, answers[i]!) }]);
       });
+      checkBonusCrystals(d);
     });
     onSubmit(res, answers);
   };

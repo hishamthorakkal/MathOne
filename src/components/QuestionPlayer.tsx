@@ -181,7 +181,7 @@ export function QuestionPlayer({ q, onDone, askStrategy = false, header }: Props
 
       {phase === 'solved' && (
         <div className="success-bar" role="status">
-          <Dino size={70} species={companion.id} color={companion.color} belly={companion.belly} mood="cheer" stage={companion.stage} accessory={companion.accessory} />
+          <Dino size={70} species={companion.id} color={companion.color} belly={companion.belly} mood="cheer" stage={companion.stage} outfit={companion.outfit} />
           <div className="success-text">
             <b>{msg}</b>
             <span>

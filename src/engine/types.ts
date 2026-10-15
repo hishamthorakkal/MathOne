@@ -154,6 +154,9 @@ export interface SkillState {
   lastSeen?: number;
 }
 
+export type Slot = 'head' | 'eyes' | 'neck' | 'back';
+export type Outfit = Partial<Record<Slot, string>>;
+
 export interface MistakeLog {
   t: number;
   skill: SkillId;
@@ -256,7 +259,14 @@ export interface AppState {
   hatched: DinoId[];
   companion: DinoId;
   cosmetics: string[];
+  /** Old single-item wardrobe (kept so saved progress still loads; see `outfit`). */
   equipped: string | null;
+  /** Mix-and-match outfit: one item per spot. */
+  outfit?: Outfit;
+  /** Skill gems earned (one per mastered skill; never taken away). */
+  gems?: SkillId[];
+  /** Bonus crystals won. */
+  bonusCrystals?: string[];
   badges: Partial<Record<BadgeId, number>>;
   crystals: WorldId[];
   bosses: WorldId[];

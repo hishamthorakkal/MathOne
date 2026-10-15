@@ -2,6 +2,7 @@ import { HashRouter, Link, Route, Routes, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { EvolutionWatcher } from './components/EvolutionWatcher';
 import { Arena } from './pages/child/Arena';
+import { CrystalCave } from './pages/child/CrystalCave';
 import { Dinos } from './pages/child/Dinos';
 import { Home } from './pages/child/Home';
 import { MissionPage } from './pages/child/Mission';
@@ -33,6 +34,7 @@ export function App() {
           <Route path="/camp" element={<MissionPage kind="camp" />} />
           <Route path="/dinos" element={<Dinos />} />
           <Route path="/arena" element={<Arena />} />
+          <Route path="/crystals" element={<CrystalCave />} />
           <Route path="/parent" element={<ParentGate />} />
           <Route path="/parent/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Home />} />

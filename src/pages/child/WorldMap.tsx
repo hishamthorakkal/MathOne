@@ -25,7 +25,9 @@ export function WorldMap() {
           ← Home
         </Link>
         <h1>🗺️ Adventure Map</h1>
-        <span className="crystal-count">💎 {state.crystals.length} / 8</span>
+        <Link to="/crystals" className="crystal-count" title="Open the Crystal Cave">
+          💎 {state.crystals.length} / 8
+        </Link>
       </header>
 
       <div className="map-path">
