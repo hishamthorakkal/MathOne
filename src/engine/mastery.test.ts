@@ -50,6 +50,60 @@ describe('mastery model', () => {
   });
 });
 
+describe('Dino Discovery', () => {
+  it('keeps all 6 original dinos and adds 12 new ones, each with a fact and a valid Dino Maths answer', async () => {
+    const { DINOS } = await import('./catalog');
+    expect(DINOS).toHaveLength(18);
+    for (const id of ['rexy', 'brachio', 'tricera', 'ptero', 'spino', 'raptor']) expect(DINOS.map((d) => d.id)).toContain(id);
+    for (const d of DINOS) {
+      expect(d.fact.length, d.id).toBeGreaterThan(10);
+      expect(d.math.options, d.id).toContain(d.math.answer);
+    }
+  });
+
+  it('unlocks each kind of dino only by its learning goal (never by chance)', async () => {
+    const { DINOS } = await import('./catalog');
+    const { discoveryProgress, nextStep, FOOTPRINTS_AT } = await import('./mastery');
+    const { markRealWorldDone, answerDinoMath } = await import('./rewards');
+    const get = (id: string) => DINOS.find((d) => d.id === id)!;
+    const s = initialState();
+    // a fresh child has only Rexy
+    expect(DINOS.filter((d) => discoveryProgress(s, d) >= 1).map((d) => d.id)).toEqual(['rexy']);
+    // same state, same answer, every time
+    expect(discoveryProgress(s, get('stego'))).toBe(discoveryProgress(s, get('stego')));
+
+    s.badges.pattern_spotter = 2;
+    expect(discoveryProgress(s, get('stego'))).toBeCloseTo(2 / 3);
+    expect(nextStep(s, get('stego'))).toBe('Spot 1 more pattern');
+    s.badges.pattern_spotter = 3;
+    expect(discoveryProgress(s, get('stego'))).toBe(1);
+
+    for (const day of ['2026-10-12', '2026-10-13', '2026-10-14']) s.days[day] = { questions: 5, seconds: 60, missions: 1, camps: 1, stars: 5 };
+    expect(discoveryProgress(s, get('compy'))).toBe(1);
+    expect(discoveryProgress(s, get('mosa'))).toBeCloseTo(3 / 5);
+
+    expect(markRealWorldDone(s, '2026-10-12')).toBe(true);
+    expect(markRealWorldDone(s, '2026-10-12')).toBe(false); // once per day
+    markRealWorldDone(s, '2026-10-13');
+    expect(discoveryProgress(s, get('archie'))).toBeGreaterThanOrEqual(FOOTPRINTS_AT * 0.8);
+    markRealWorldDone(s, '2026-10-14');
+    expect(discoveryProgress(s, get('archie'))).toBe(1);
+
+    s.eggsEarned = 25;
+    expect(discoveryProgress(s, get('ovi'))).toBe(1);
+
+    s.mocks.push({ date: '2026-11-20', kind: 'full', score: 38, maxScore: 50, correct: 38, total: 50, seconds: 3000, items: [] });
+    expect(discoveryProgress(s, get('goldrex'))).toBe(1); // 76% in a full mock
+
+    // Dino Maths is just for fun: a bonus star once, no effect on skills
+    const stars = s.stars;
+    expect(answerDinoMath(s, 'stego', true)).toBe(true);
+    expect(answerDinoMath(s, 'stego', true)).toBe(false);
+    expect(s.stars).toBe(stars + 2);
+    expect(Object.keys(s.skills)).toHaveLength(0);
+  });
+});
+
 describe('parent unlock of the next day’s adventure', () => {
   it('raises today’s limit, caps at 3 extra, and counts each early adventure as a plan day', async () => {
     const { DAILY_MISSION_LIMIT, MAX_EXTRA_PER_DAY, missionLimit, unlockNextDay } = await import('./rewards');

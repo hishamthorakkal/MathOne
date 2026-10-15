@@ -210,7 +210,26 @@ export interface MockResult {
   items: MockQuestionResult[];
 }
 
-export type DinoId = 'rexy' | 'brachio' | 'tricera' | 'ptero' | 'spino' | 'raptor';
+export type DinoId =
+  | 'rexy'
+  | 'brachio'
+  | 'tricera'
+  | 'ptero'
+  | 'spino'
+  | 'raptor'
+  // discovered later (Dino Discovery Book)
+  | 'compy'
+  | 'diplo'
+  | 'iguano'
+  | 'stego'
+  | 'parasaur'
+  | 'ankylo'
+  | 'dilo'
+  | 'pachy'
+  | 'mosa'
+  | 'archie'
+  | 'ovi'
+  | 'goldrex';
 export type BadgeId = 'great_thinker' | 'pattern_spotter' | 'never_give_up' | 'sharp_eyes' | 'super_explainer';
 export type Stage = 'egg' | 'baby' | 'explorer' | 'champion' | 'olympiad';
 
@@ -248,4 +267,10 @@ export interface AppState {
   seenStage?: Stage;
   /** Extra adventures a parent unlocked, by date (YYYY-MM-DD). */
   extraMissions?: Record<string, number>;
+  /** Real-World Missions the child said they did (dates, one per day). */
+  realWorldDone?: string[];
+  /** Dinos whose Dino Maths question has been answered correctly. */
+  factsAnswered?: DinoId[];
+  /** Total Dino Eggs ever earned (spending does not lower it). */
+  eggsEarned?: number;
 }

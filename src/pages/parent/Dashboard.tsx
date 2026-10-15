@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { DIFFICULTY_LABEL, EXAM_DATE, SKILL, SKILLS, WORLDS, skillsOf } from '../../engine/catalog';
+import { DIFFICULTY_LABEL, DINOS, EXAM_DATE, SKILL, SKILLS, WORLDS, skillsOf } from '../../engine/catalog';
 import { addDays, daysToExam, getDateOverride, phaseOf, prettyDate, SCHEDULE, setDateOverride, today } from '../../engine/dates';
-import { allSkillStats, currentWorld, displayStage, STAGE_INFO, worldProgress } from '../../engine/mastery';
+import { allSkillStats, currentWorld, discoveryProgress, displayStage, nextStep, STAGE_INFO, worldProgress } from '../../engine/mastery';
 import { clearProgress, initialState, replaceState, update, useAppState } from '../../engine/store';
 import { DAILY_MISSION_LIMIT, MAX_EXTRA_PER_DAY, missionLimit, unlockNextDay } from '../../engine/rewards';
 import type { AppState, SkillId } from '../../engine/types';
@@ -150,6 +150,36 @@ function Overview({ state }: { state: AppState }) {
             ⚠️ Your child said “I guessed” on {guessed} of {strategyTotal} “How did you think?” prompts. Encourage them to explain their thinking out loud.
           </p>
         )}
+      </section>
+
+      <section className="card">
+        <h2>Dinos found</h2>
+        <p>
+          <b>{state.hatched.length}</b> of {DINOS.length} dinos discovered:{' '}
+          {DINOS.filter((d) => state.hatched.includes(d.id))
+            .map((d) => d.name)
+            .join(', ')}
+        </p>
+        {(() => {
+          const next = DINOS.filter((d) => !state.hatched.includes(d.id))
+            .map((d) => ({ d, p: discoveryProgress(state, d) }))
+            .sort((a, b) => b.p - a.p)
+            .slice(0, 3);
+          return next.length ? (
+            <ul className="kv">
+              {next.map(({ d, p }) => (
+                <li key={d.id}>
+                  <span>
+                    <b>{d.name}</b> <span className="muted">({d.species})</span>
+                  </span>
+                  <span className="muted">{p >= 1 ? 'Egg ready to hatch' : `${Math.round(p * 100)}% · ${nextStep(state, d)}`}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted">All dinos found! 🎉</p>
+          );
+        })()}
       </section>
 
       <section className="card">

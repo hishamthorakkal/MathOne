@@ -29,6 +29,8 @@ interface Species {
   name: string;
   /** Optional transform for the whole drawing (e.g. to fit a long neck). */
   wrap?: string;
+  /** Sea creatures float on water instead of standing on the ground. */
+  noShadow?: boolean;
   /** Drawn behind everything, not animated (e.g. Spino's sail). */
   back?: (p: Paint) => ReactNode;
   /** The animated part: tail (wags) or wings (flap). */
@@ -55,7 +57,7 @@ const OUTLINE = { strokeWidth: 3, strokeLinejoin: 'round' as const, strokeLineca
 const FEATHER = '#ffd166';
 const SAIL = '#fb923c';
 
-const SPECIES: Record<DinoId, Species> = {
+const BASE: Record<Exclude<DinoId, 'goldrex'>, Species> = {
   // ---------- Tyrannosaurus rex: big head, tiny arms ----------
   rexy: {
     name: 'T. rex',
@@ -319,6 +321,477 @@ const SPECIES: Record<DinoId, Species> = {
     medal: { x: 108, y: 112 },
     pack: { x: 80, y: 98 },
   },
+
+  // ---------- Compsognathus: tiny and quick ----------
+  compy: {
+    name: 'Compsognathus',
+    wrap: 'translate(28 50) scale(0.72)',
+    tail: ({ c }) => <path d="M66 104 C 40 100 20 96 4 90 C 14 108 40 118 64 120 Z" fill={c} />,
+    tailOrigin: { x: 64, y: 110 },
+    body: ({ c, b, far }) => (
+      <>
+        <path d="M90 120 L 96 150 L 92 176 L 84 182 L 104 182 L 104 150 Z" fill={far} />
+        <ellipse cx="96" cy="110" rx="32" ry="22" fill={c} transform="rotate(-10 96 110)" />
+        <ellipse cx="100" cy="118" rx="20" ry="11" fill={b} stroke="none" />
+        <path d="M104 116 C 118 118 122 136 114 146 L 118 172 L 132 178 L 132 184 L 104 184 L 104 174 L 98 150 C 90 140 92 120 104 116 Z" fill={c} />
+        <path d="M120 100 C 128 92 132 82 134 74 L 146 78 C 144 90 138 100 128 110 Z" fill={c} />
+        <path d="M132 64 C 136 52 158 50 172 58 C 182 64 186 72 182 78 C 172 82 156 82 144 80 C 134 78 128 72 132 64 Z" fill={c} />
+        <path d="M122 112 q 10 2 10 10" fill="none" strokeWidth="5" />
+      </>
+    ),
+    eye: { x: 154, y: 66, r: 9 },
+    cheek: { x: 148, y: 76, r: 5 },
+    smile: 'M156 74 Q 166 79 178 73',
+    open: 'M156 73 Q 166 84 178 72 Z',
+    mouth: { x: 166, y: 77 },
+    hat: { x: 156, y: 54, s: 1 },
+    scarf: { x: 132, y: 96, rot: -50 },
+    medal: { x: 110, y: 118 },
+    pack: { x: 80, y: 100 },
+  },
+
+  // ---------- Diplodocus: long neck and very long whip tail ----------
+  diplo: {
+    name: 'Diplodocus',
+    tail: ({ c }) => (
+      <path d="M56 124 C 36 124 20 130 10 142 C 4 150 2 160 8 164 C 10 156 16 148 26 142 C 38 136 50 136 60 138 Z" fill={c} />
+    ),
+    tailOrigin: { x: 58, y: 130 },
+    body: ({ c, b, far }) => (
+      <>
+        <rect x="64" y="140" width="15" height="42" rx="7" fill={far} />
+        <rect x="108" y="142" width="15" height="40" rx="7" fill={far} />
+        <ellipse cx="90" cy="128" rx="40" ry="24" fill={c} />
+        <ellipse cx="92" cy="140" rx="24" ry="10" fill={b} stroke="none" />
+        <rect x="52" y="142" width="16" height="40" rx="7" fill={c} />
+        <rect x="96" y="144" width="16" height="38" rx="7" fill={c} />
+        <path d="M122 118 C 142 104 156 90 168 72 L 180 80 C 168 98 152 116 128 132 Z" fill={c} />
+        <path d="M134 118 C 150 106 160 94 170 80" fill="none" stroke={b} strokeWidth="5" />
+        <ellipse cx="182" cy="72" rx="15" ry="9" fill={c} />
+      </>
+    ),
+    details: ({ c, d }) => (
+      <path
+        d="M60 116 l 4 -8 l 4 8 M 74 108 l 4 -8 l 4 8 M 88 106 l 4 -8 l 4 8 M 102 108 l 4 -8 l 4 8"
+        fill={shade(c, 0.25)}
+        stroke={d}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    ),
+    eye: { x: 182, y: 69, r: 5 },
+    cheek: { x: 188, y: 78, r: 3 },
+    smile: 'M184 77 Q 190 79 195 75',
+    open: 'M184 76 Q 190 83 195 74 Z',
+    mouth: { x: 189, y: 78 },
+    hat: { x: 181, y: 63, s: 0.55 },
+    scarf: { x: 150, y: 100, rot: -50 },
+    medal: { x: 100, y: 128 },
+    pack: { x: 74, y: 112 },
+  },
+
+  // ---------- Iguanodon: thumb spike ----------
+  iguano: {
+    name: 'Iguanodon',
+    tail: ({ c }) => <path d="M70 120 C 44 120 22 112 6 100 C 16 126 44 144 76 146 Z" fill={c} />,
+    tailOrigin: { x: 72, y: 130 },
+    body: ({ c, b, far }) => (
+      <>
+        <path d="M94 142 L 98 176 L 88 182 L 110 182 L 112 152 Z" fill={far} />
+        <ellipse cx="96" cy="128" rx="42" ry="32" fill={c} transform="rotate(-12 96 128)" />
+        <ellipse cx="102" cy="140" rx="26" ry="16" fill={b} stroke="none" transform="rotate(-12 102 140)" />
+        <path d="M102 132 C 124 128 130 150 122 162 L 126 178 L 138 182 L 102 182 L 104 164 C 94 154 92 140 102 132 Z" fill={c} />
+        <path d="M118 106 C 126 98 132 92 138 86 L 152 98 C 144 106 134 114 126 122 Z" fill={c} />
+        <path d="M134 80 C 136 66 152 60 168 64 C 182 68 192 78 192 88 C 186 96 170 98 154 98 C 140 98 132 92 134 80 Z" fill={c} />
+        <path d="M178 90 L 194 86 C 194 94 186 98 176 98 Z" fill={shade(c, -0.15)} />
+        <path d="M132 118 C 142 120 148 128 148 136" fill="none" strokeWidth="6" />
+        <path d="M142 130 L 164 104 L 154 138 Z" fill="#fff6e0" />
+      </>
+    ),
+    details: ({ d }) => <circle cx="186" cy="80" r="2" fill={d} />,
+    eye: { x: 158, y: 78, r: 7.5 },
+    cheek: { x: 152, y: 88, r: 4 },
+    smile: 'M158 92 Q 170 96 182 90',
+    open: 'M158 91 Q 170 102 182 89 Z',
+    mouth: { x: 170, y: 94 },
+    hat: { x: 162, y: 64, s: 0.8 },
+    scarf: { x: 134, y: 104, rot: -42 },
+    medal: { x: 114, y: 126 },
+    pack: { x: 68, y: 116 },
+  },
+
+  // ---------- Stegosaurus: back plates and spiky tail ----------
+  stego: {
+    name: 'Stegosaurus',
+    back: () => {
+      const plate = '#f59e0b';
+      const plates: [number, number, number][] = [
+        [50, 112, 14],
+        [64, 100, 18],
+        [80, 94, 21],
+        [98, 94, 21],
+        [116, 100, 18],
+        [130, 112, 13],
+      ];
+      return (
+        <>
+          {plates.map(([x, y, s]) => (
+            <path
+              key={x}
+              d={`M${x - s * 0.55} ${y + 6} L ${x} ${y - s} L ${x + s * 0.55} ${y + 6} Z`}
+              fill={plate}
+              stroke={shade(plate, -0.35)}
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+            />
+          ))}
+        </>
+      );
+    },
+    tail: ({ c }) => (
+      <>
+        <path d="M44 128 C 28 126 14 120 4 110 C 10 128 26 140 48 144 Z" fill={c} />
+        <path d="M10 112 L 2 96 L 16 110 Z M 20 118 L 14 100 L 26 116 Z" fill="#fff6e0" />
+      </>
+    ),
+    tailOrigin: { x: 46, y: 134 },
+    body: ({ c, b, far }) => (
+      <>
+        <rect x="60" y="146" width="18" height="36" rx="7" fill={far} />
+        <rect x="116" y="150" width="15" height="32" rx="7" fill={far} />
+        <ellipse cx="92" cy="130" rx="52" ry="30" fill={c} />
+        <ellipse cx="96" cy="146" rx="32" ry="11" fill={b} stroke="none" />
+        <rect x="46" y="148" width="19" height="34" rx="7" fill={c} />
+        <rect x="104" y="152" width="16" height="30" rx="7" fill={c} />
+        <path d="M134 128 C 146 128 152 134 156 140 L 146 150 C 140 144 136 140 130 140 Z" fill={c} />
+        <ellipse cx="164" cy="142" rx="20" ry="12" fill={c} />
+      </>
+    ),
+    eye: { x: 166, y: 138, r: 6 },
+    cheek: { x: 160, y: 148, r: 3.5 },
+    smile: 'M168 148 Q 176 152 183 146',
+    open: 'M168 147 Q 176 156 183 145 Z',
+    mouth: { x: 176, y: 150 },
+    hat: { x: 164, y: 132, s: 0.6 },
+    scarf: { x: 146, y: 140, rot: 30 },
+    medal: { x: 126, y: 140 },
+    pack: { x: 62, y: 132 },
+  },
+
+  // ---------- Parasaurolophus: tube crest, duck bill ----------
+  parasaur: {
+    name: 'Parasaurolophus',
+    tail: ({ c }) => <path d="M72 120 C 44 118 22 110 6 98 C 16 124 44 142 78 144 Z" fill={c} />,
+    tailOrigin: { x: 74, y: 130 },
+    body: ({ c, b, far }) => (
+      <>
+        <path d="M94 140 L 98 176 L 88 182 L 110 182 L 112 150 Z" fill={far} />
+        <ellipse cx="96" cy="126" rx="40" ry="31" fill={c} transform="rotate(-14 96 126)" />
+        <ellipse cx="102" cy="138" rx="24" ry="15" fill={b} stroke="none" transform="rotate(-14 102 138)" />
+        <path d="M102 130 C 122 126 128 148 120 160 L 124 178 L 136 182 L 102 182 L 104 162 C 94 152 92 138 102 130 Z" fill={c} />
+        <path d="M114 104 C 122 94 128 86 134 80 L 148 92 C 140 100 130 110 122 120 Z" fill={c} />
+        <path d="M140 64 C 120 50 96 40 76 38 C 80 46 92 52 108 58 C 120 62 128 70 134 76 Z" fill="#f97316" />
+        <path d="M132 76 C 132 62 146 56 160 60 C 170 62 178 70 192 74 C 194 82 188 88 176 88 L 150 90 C 138 90 132 86 132 76 Z" fill={c} />
+        <path d="M168 84 L 192 78 C 194 84 188 90 176 90 Z" fill="#ffd8a8" />
+        <path d="M132 118 q 10 2 10 12" fill="none" strokeWidth="5" />
+      </>
+    ),
+    eye: { x: 152, y: 72, r: 7.5 },
+    cheek: { x: 146, y: 82, r: 4 },
+    smile: 'M154 86 Q 166 92 178 86',
+    open: 'M154 85 Q 166 96 178 85 Z',
+    mouth: { x: 166, y: 89 },
+    hat: { x: 158, y: 61, s: 0.75 },
+    scarf: { x: 128, y: 100, rot: -45 },
+    medal: { x: 114, y: 124 },
+    pack: { x: 68, y: 114 },
+  },
+
+  // ---------- Ankylosaurus: armour and club tail ----------
+  ankylo: {
+    name: 'Ankylosaurus',
+    tail: ({ c }) => (
+      <>
+        <path d="M44 136 C 30 134 22 132 18 130 L 20 140 C 26 142 34 144 44 146 Z" fill={c} />
+        <circle cx="12" cy="131" r="10" fill={shade(c, 0.1)} />
+        <circle cx="22" cy="135" r="8" fill={shade(c, 0.1)} />
+      </>
+    ),
+    tailOrigin: { x: 46, y: 140 },
+    body: ({ c, b, far }) => {
+      const armour = '#fcd34d';
+      return (
+        <>
+          <rect x="62" y="152" width="18" height="30" rx="7" fill={far} />
+          <rect x="118" y="152" width="18" height="30" rx="7" fill={far} />
+          <ellipse cx="96" cy="136" rx="56" ry="27" fill={c} />
+          <ellipse cx="98" cy="152" rx="36" ry="9" fill={b} stroke="none" />
+          <path d="M44 140 l -10 4 l 10 4 M 62 154 l -6 10 l 10 -4 M 132 154 l 6 10 l -10 -4" fill={armour} />
+          <rect x="48" y="154" width="19" height="28" rx="7" fill={c} />
+          <rect x="104" y="154" width="19" height="28" rx="7" fill={c} />
+          <path d="M146 128 C 158 122 176 124 186 134 C 190 142 184 152 172 154 C 160 156 148 150 146 140 Z" fill={c} />
+          <path d="M156 124 l -4 -10 l 10 6 M 170 124 l 2 -10 l 6 10" fill={armour} />
+        </>
+      );
+    },
+    details: () => {
+      const armour = '#fcd34d';
+      const ys = [124, 114, 109, 107, 109, 114, 124];
+      return (
+        <>
+          {[52, 66, 80, 94, 108, 122, 136].map((x, i) => (
+            <circle key={x} cx={x} cy={ys[i]} r="6" fill={armour} stroke={shade(armour, -0.4)} strokeWidth="2" />
+          ))}
+        </>
+      );
+    },
+    eye: { x: 166, y: 136, r: 6.5 },
+    cheek: { x: 160, y: 146, r: 3.5 },
+    smile: 'M168 146 Q 178 150 186 143',
+    open: 'M168 145 Q 178 154 186 142 Z',
+    mouth: { x: 177, y: 148 },
+    hat: { x: 168, y: 125, s: 0.65 },
+    scarf: { x: 150, y: 140, rot: 10 },
+    medal: { x: 132, y: 150 },
+    pack: { x: 96, y: 118 },
+  },
+
+  // ---------- Dilophosaurus: two crests and a neck frill ----------
+  dilo: {
+    name: 'Dilophosaurus',
+    back: () => {
+      const red = '#ef4444';
+      return (
+        <>
+          <circle cx="140" cy="80" r="34" fill={red} stroke={shade(red, -0.35)} strokeWidth="3" />
+          {[0, 1, 2, 3, 4].map((i) => {
+            const a = ((-170 + i * 40) * Math.PI) / 180;
+            return <path key={i} d={`M140 80 L ${140 + 34 * Math.cos(a)} ${80 + 34 * Math.sin(a)}`} stroke={shade(red, -0.3)} strokeWidth="2" />;
+          })}
+        </>
+      );
+    },
+    tail: ({ c }) => <path d="M70 116 C 44 112 22 104 6 92 C 16 118 44 136 76 140 Z" fill={c} />,
+    tailOrigin: { x: 72, y: 126 },
+    body: ({ c, b, far }) => (
+      <>
+        <path d="M94 138 L 98 176 L 88 182 L 110 182 L 112 148 Z" fill={far} />
+        <ellipse cx="96" cy="122" rx="38" ry="26" fill={c} transform="rotate(-14 96 122)" />
+        <ellipse cx="102" cy="132" rx="22" ry="13" fill={b} stroke="none" transform="rotate(-14 102 132)" />
+        <path d="M102 126 C 122 122 128 144 120 156 L 124 178 L 136 182 L 102 182 L 104 160 C 94 150 92 134 102 126 Z" fill={c} />
+        <path d="M114 104 C 122 96 128 90 134 84 L 148 96 C 140 104 130 112 122 118 Z" fill={c} />
+        <path d="M132 74 C 134 62 150 58 166 62 L 192 72 C 194 80 186 84 176 84 L 148 86 C 138 86 130 82 132 74 Z" fill={c} />
+        <path d="M140 64 C 140 46 160 44 164 62 Z" fill="#ef4444" />
+        <path d="M150 62 C 152 42 172 42 172 64 Z" fill={shade('#ef4444', 0.15)} />
+        <path d="M128 112 q 10 2 10 12" fill="none" strokeWidth="5" />
+      </>
+    ),
+    eye: { x: 150, y: 72, r: 7.5 },
+    cheek: { x: 146, y: 80, r: 4 },
+    smile: 'M154 80 Q 170 86 188 78',
+    open: 'M154 79 Q 170 92 188 77 Z',
+    mouth: { x: 170, y: 83 },
+    hat: { x: 160, y: 58, s: 0.7 },
+    scarf: { x: 128, y: 100, rot: -45 },
+    medal: { x: 112, y: 120 },
+    pack: { x: 68, y: 110 },
+  },
+
+  // ---------- Pachycephalosaurus: thick dome head ----------
+  pachy: {
+    name: 'Pachycephalosaurus',
+    tail: ({ c }) => <path d="M70 118 C 44 116 22 108 8 94 C 18 120 44 140 76 142 Z" fill={c} />,
+    tailOrigin: { x: 72, y: 128 },
+    body: ({ c, b, far }) => (
+      <>
+        <path d="M94 140 L 98 176 L 88 182 L 110 182 L 112 150 Z" fill={far} />
+        <ellipse cx="96" cy="124" rx="38" ry="30" fill={c} transform="rotate(-20 96 124)" />
+        <ellipse cx="104" cy="134" rx="20" ry="17" fill={b} stroke="none" transform="rotate(-20 104 134)" />
+        <path d="M102 128 C 122 124 128 146 120 158 L 124 178 L 136 182 L 102 182 L 104 162 C 94 152 92 136 102 128 Z" fill={c} />
+        <path d="M110 104 C 118 96 124 92 130 90 L 142 102 C 134 108 126 114 118 120 Z" fill={c} />
+        <path d="M124 82 C 126 70 140 64 156 66 C 172 68 184 78 186 92 C 178 100 160 104 144 102 C 132 100 122 94 124 82 Z" fill={c} />
+        <path d="M124 80 C 120 54 138 40 152 40 C 168 40 182 56 178 78 C 160 72 140 72 124 80 Z" fill="#fbcfe8" />
+        <path d="M126 116 q 10 0 12 8" fill="none" strokeWidth="5" />
+      </>
+    ),
+    details: ({ c, d }) => (
+      <>
+        {[-160, -135, -110, -70, -45, -20].map((a) => {
+          const r = (a * Math.PI) / 180;
+          return <circle key={a} cx={150 + 28 * Math.cos(r)} cy={70 + 26 * Math.sin(r) + 10} r="4.5" fill={shade(c, 0.2)} stroke={d} strokeWidth="2" />;
+        })}
+        <circle cx="182" cy="84" r="2" fill={d} />
+      </>
+    ),
+    eye: { x: 152, y: 82, r: 7.5 },
+    cheek: { x: 146, y: 92, r: 4 },
+    smile: 'M154 94 Q 168 100 182 92',
+    open: 'M154 93 Q 168 106 182 91 Z',
+    mouth: { x: 168, y: 97 },
+    hat: { x: 152, y: 44, s: 0.85 },
+    scarf: { x: 124, y: 106, rot: -40 },
+    medal: { x: 112, y: 124 },
+    pack: { x: 68, y: 112 },
+  },
+
+  // ---------- Mosasaurus: sea reptile with flippers ----------
+  mosa: {
+    name: 'Mosasaurus',
+    noShadow: true,
+    back: () => <path d="M0 170 Q 25 160 50 170 T 100 170 T 150 170 T 200 170 L 200 192 L 0 192 Z" fill="#7dd3fc" opacity="0.7" />,
+    tail: ({ c }) => <path d="M40 118 C 24 118 12 112 2 100 L 6 126 L 0 142 C 14 134 28 130 44 132 Z" fill={c} />,
+    tailOrigin: { x: 44, y: 124 },
+    body: ({ c, b }) => (
+      <>
+        <path d="M70 136 C 64 150 52 160 40 160 C 50 150 56 140 58 132 Z" fill={shade(c, -0.1)} />
+        <path d="M44 122 C 60 104 100 100 140 106 C 160 108 176 114 194 120 C 188 132 168 138 140 138 C 100 140 64 140 44 132 Z" fill={c} />
+        <path d="M60 130 C 90 136 130 136 160 132" fill="none" stroke={b} strokeWidth="7" />
+        <path d="M118 136 C 116 150 108 160 96 164 C 102 152 104 144 104 136 Z" fill={shade(c, -0.1)} />
+        <path d="M150 122 L 196 120 C 192 128 180 132 164 132 C 156 132 150 128 150 122 Z" fill={b} />
+      </>
+    ),
+    details: ({ d }) => (
+      <>
+        <g fill="#fff" stroke={d} strokeWidth="1">
+          <path d="M160 121.5 l 2 4 l 2 -4 Z" />
+          <path d="M170 121 l 2 4 l 2 -4 Z" />
+          <path d="M180 120.6 l 2 3.6 l 2 -3.8 Z" />
+        </g>
+        <path d="M30 100 q 6 -10 12 0 M 172 92 q 5 -8 10 0" fill="none" stroke="#7dd3fc" strokeWidth="3" strokeLinecap="round" />
+      </>
+    ),
+    eye: { x: 150, y: 112, r: 7 },
+    cheek: { x: 144, y: 122, r: 4 },
+    smile: 'M152 128 Q 170 132 190 126',
+    open: 'M152 127 Q 170 138 190 125 Z',
+    mouth: { x: 170, y: 130 },
+    hat: { x: 150, y: 104, s: 0.7 },
+    scarf: { x: 132, y: 120, rot: 80 },
+    medal: { x: 118, y: 134 },
+    pack: { x: 90, y: 108 },
+  },
+
+  // ---------- Archaeopteryx: feathered wings, first bird ----------
+  archie: {
+    name: 'Archaeopteryx',
+    tail: () => {
+      const feather = '#60a5fa';
+      return (
+        <>
+          <path d="M70 120 C 50 124 30 128 10 140 C 30 140 50 136 72 132 Z" fill={feather} />
+          <path d="M14 134 l -8 -6 M 22 132 l -10 -4 M 30 130 l -10 -2" fill="none" stroke={shade(feather, -0.35)} strokeWidth="2" />
+        </>
+      );
+    },
+    tailOrigin: { x: 72, y: 126 },
+    body: ({ c, b, far }) => {
+      const feather = '#60a5fa';
+      return (
+        <>
+          <path d="M96 140 L 98 172 L 90 180 L 108 180 L 108 146 Z" fill={far} />
+          <ellipse cx="96" cy="124" rx="30" ry="24" fill={c} transform="rotate(-14 96 124)" />
+          <ellipse cx="102" cy="132" rx="18" ry="13" fill={b} stroke="none" />
+          <path d="M104 138 L 110 172 L 122 180 L 102 180 L 100 150 Z" fill={c} />
+          <path d="M86 112 C 66 96 46 92 24 96 C 40 108 58 118 84 126 Z" fill={feather} />
+          <path d="M30 98 l 4 8 M 42 98 l 4 10 M 54 102 l 3 10 M 66 106 l 2 10" fill="none" stroke={shade(feather, -0.35)} strokeWidth="2" />
+          <path d="M112 106 C 118 98 122 90 126 84 L 138 92 C 132 100 126 108 120 114 Z" fill={c} />
+          <ellipse cx="138" cy="80" rx="16" ry="14" fill={c} />
+          <path d="M148 76 L 176 82 L 148 90 Z" fill="#fde68a" />
+        </>
+      );
+    },
+    details: ({ d }) => (
+      <>
+        <path d="M130 66 l 2 -8 l 4 7 l 4 -8 l 2 9" fill="#60a5fa" stroke={shade('#60a5fa', -0.35)} strokeWidth="2" strokeLinejoin="round" />
+        <g fill="#fff" stroke={d} strokeWidth="0.8">
+          <path d="M156 84.5 l 1.5 3 l 1.5 -3 Z" />
+          <path d="M164 84 l 1.5 3 l 1.5 -3 Z" />
+        </g>
+      </>
+    ),
+    eye: { x: 138, y: 76, r: 6.5 },
+    cheek: { x: 134, y: 86, r: 3.5 },
+    smile: 'M150 86 Q 162 88 172 84',
+    smileColor: '#a3801f',
+    open: 'M150 85 Q 162 92 172 83 Z',
+    mouth: { x: 160, y: 87 },
+    hat: { x: 138, y: 66, s: 0.65 },
+    scarf: { x: 120, y: 100, rot: -40 },
+    medal: { x: 104, y: 124 },
+    pack: { x: 80, y: 116 },
+  },
+
+  // ---------- Oviraptor: parrot beak, crest, carries an egg ----------
+  ovi: {
+    name: 'Oviraptor',
+    tail: ({ c }) => (
+      <>
+        <path d="M70 114 C 48 110 28 104 12 96 C 20 116 44 130 74 134 Z" fill={c} />
+        <path d="M14 96 l -10 -6 l 4 10 l -6 4 l 12 2 Z" fill="#fb923c" />
+      </>
+    ),
+    tailOrigin: { x: 72, y: 122 },
+    body: ({ c, b, far }) => (
+      <>
+        <path d="M94 136 L 98 174 L 88 182 L 110 182 L 112 146 Z" fill={far} />
+        <ellipse cx="96" cy="120" rx="34" ry="26" fill={c} transform="rotate(-14 96 120)" />
+        <ellipse cx="102" cy="130" rx="20" ry="13" fill={b} stroke="none" />
+        <path d="M102 124 C 120 122 126 142 118 154 L 122 176 L 134 182 L 102 182 L 104 158 C 94 148 92 132 102 124 Z" fill={c} />
+        <path d="M112 102 C 120 94 126 86 130 78 L 144 86 C 138 96 130 106 122 114 Z" fill={c} />
+        <path d="M136 52 C 132 40 140 32 150 34 C 156 40 156 50 152 60 Z" fill="#fb923c" />
+        <ellipse cx="146" cy="70" rx="20" ry="17" fill={c} />
+        <path d="M160 62 C 172 64 178 72 176 80 C 170 84 164 84 158 80 Z" fill="#fde68a" />
+        <ellipse cx="132" cy="136" rx="13" ry="16" fill="#fff8e7" stroke="#d9c7a0" />
+        <path d="M118 116 C 130 118 138 124 140 132" fill="none" strokeWidth="6" />
+        <path d="M140 126 C 148 130 148 140 142 146" fill="none" strokeWidth="6" />
+      </>
+    ),
+    details: () => (
+      <>
+        <circle cx="128" cy="130" r="3" fill="#f2d9a6" />
+        <circle cx="136" cy="142" r="2.5" fill="#f2d9a6" />
+      </>
+    ),
+    eye: { x: 146, y: 66, r: 7.5 },
+    cheek: { x: 144, y: 78, r: 4 },
+    smile: 'M161 77 Q 167 80 173 77',
+    smileColor: '#a3801f',
+    open: 'M161 76 Q 167 83 173 76 Z',
+    mouth: { x: 167, y: 79 },
+    hat: { x: 146, y: 54, s: 0.7 },
+    scarf: { x: 126, y: 96, rot: -45 },
+    medal: { x: 108, y: 112 },
+    pack: { x: 70, y: 110 },
+  },
+};
+
+/** Golden Rex: the legendary T. rex, drawn in gold with a glow and sparkles. */
+const sparkle = (x: number, y: number, k: number) => (
+  <path
+    key={`${x}-${y}`}
+    d={`M${x} ${y - 8 * k} l ${2 * k} ${6 * k} l ${6 * k} ${2 * k} l ${-6 * k} ${2 * k} l ${-2 * k} ${6 * k} l ${-2 * k} ${-6 * k} l ${-6 * k} ${-2 * k} l ${6 * k} ${-2 * k} Z`}
+    fill="#fffbe0"
+    stroke="#f5b301"
+    strokeWidth="1"
+  />
+);
+
+const SPECIES: Record<DinoId, Species> = {
+  ...BASE,
+  goldrex: {
+    ...BASE.rexy,
+    name: 'Golden T. rex',
+    back: () => <circle cx="110" cy="110" r="84" fill="#fff6cc" />,
+    details: (p) => (
+      <>
+        {BASE.rexy.details?.(p)}
+        {sparkle(30, 50, 1.2)}
+        {sparkle(186, 120, 1)}
+        {sparkle(50, 160, 0.8)}
+        {sparkle(180, 26, 0.7)}
+      </>
+    ),
+  },
 };
 
 /** Friendly SVG dinosaur companion, drawn as its real species. */
@@ -337,7 +810,7 @@ export function Dino({
   const p: Paint = { c: color, b: belly, d: shade(color, -0.3), far: shade(color, -0.15) };
   // Each stage is visibly bigger than the last.
   const scale = { egg: 0.78, baby: 0.82, explorer: 0.9, champion: 0.98, olympiad: 1.04 }[stage];
-  const crown = accessory === 'crown' || (stage === 'olympiad' && !accessory);
+  const crown = accessory === 'crown' || ((stage === 'olympiad' || species === 'goldrex') && !accessory);
   const { eye, mouth } = sp;
   const origin = (pt: Pt): CSSProperties => ({ transformOrigin: `${pt.x}px ${pt.y}px` });
 
@@ -350,7 +823,7 @@ export function Dino({
       role="img"
       aria-label={title ?? `${sp.name} dino`}
     >
-      <ellipse cx="100" cy="188" rx="58" ry="8" fill="rgba(0,0,0,0.12)" />
+      {!sp.noShadow && <ellipse cx="100" cy="188" rx="58" ry="8" fill="rgba(0,0,0,0.12)" />}
       <g transform={`translate(100 190) scale(${scale}) translate(-100 -190)`}>
         <g transform={sp.wrap}>
           {sp.back?.(p)}

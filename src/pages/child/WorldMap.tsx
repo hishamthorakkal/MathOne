@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SKILL, WORLDS, skillsOf } from '../../engine/catalog';
 import { today } from '../../engine/dates';
-import { bossReady, CASTLE_APPEARS, currentWorld, isUnlocked, masteryOf, worldProgress } from '../../engine/mastery';
+import { bossReady, CASTLE_APPEARS, closestDino, currentWorld, isUnlocked, masteryOf, worldProgress } from '../../engine/mastery';
 import { useAppState } from '../../engine/store';
 import type { WorldId } from '../../engine/types';
 
@@ -11,6 +11,7 @@ const starsFor = (m: number) => (m >= 0.75 ? 3 : m >= 0.5 ? 2 : m > 0.15 ? 1 : 0
 export function WorldMap() {
   const state = useAppState();
   const current = currentWorld(state);
+  const nearDino = closestDino(state);
   const [sel, setSel] = useState<WorldId>(current);
   const t = today();
   const castleHidden = !state.settings.unlockAll && t < CASTLE_APPEARS && !isUnlocked(state, 'olympiad_castle');
@@ -49,6 +50,7 @@ export function WorldMap() {
                 {state.crystals.includes(x.id) ? '💎' : ''}
                 {state.bosses.includes(x.id) ? '⚔️' : ''}
                 {x.id === current ? '🦖' : ''}
+                {nearDino?.tab === x.id ? '🐾' : ''}
               </span>
             </button>
           );

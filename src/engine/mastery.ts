@@ -1,4 +1,4 @@
-import { DINOS, SKILL, SKILLS, WORLDS, skillsOf, type DinoInfo } from './catalog';
+import { COSMETICS, DINOS, HATCH_COST, SKILL, SKILLS, WORLDS, skillsOf, type DinoInfo } from './catalog';
 import { addDays, SCHEDULE, today } from './dates';
 import type { AppState, Difficulty, Outcome, SkillId, SkillState, Stage, WorldId } from './types';
 
@@ -237,12 +237,100 @@ export const STAGE_INFO: Record<Stage, { name: string; next: string }> = {
   olympiad: { name: 'Olympiad Dino', next: 'You reached the top! 👑' },
 };
 
-export function dinoReady(state: AppState, d: DinoInfo): boolean {
-  if (!d.world) return true;
-  return masteredCount(state, d.world) >= (d.mastered ?? 1);
+// ---------- Dino Discovery ----------
+
+/** Eggs ever earned. Older saves without the counter get a fair estimate. */
+export function lifetimeEggs(state: AppState): number {
+  if (state.eggsEarned != null) return state.eggsEarned;
+  const spentOnDinos = Math.max(0, state.hatched.length - 1) * HATCH_COST;
+  const spentOnClothes = COSMETICS.filter((c) => state.cosmetics.includes(c.id)).reduce((a, c) => a + c.cost, 0);
+  return state.eggs + spentOnDinos + spentOnClothes;
+}
+
+export const adventureDayCount = (state: AppState) => Object.values(state.days).filter((d) => d.questions > 0).length;
+export const campsFinished = (state: AppState) => Object.values(state.days).reduce((a, d) => a + d.camps, 0);
+const bestFullMock = (state: AppState) => Math.max(0, ...state.mocks.filter((m) => m.kind === 'full').map((m) => m.score / m.maxScore));
+
+/** Progress towards discovering a dino, from 0 to 1. Fully deterministic: no luck involved. */
+export function discoveryProgress(state: AppState, d: DinoInfo): number {
+  const u = d.unlock;
+  const ratio = (have: number, need: number) => Math.max(0, Math.min(1, have / need));
+  switch (u.kind) {
+    case 'start':
+      return 1;
+    case 'skills':
+      return ratio(u.skills.filter((id) => isMastered(state.skills[id])).length, u.count);
+    case 'crystal':
+      return state.crystals.includes(u.world) ? 1 : Math.min(0.95, worldProgress(state, u.world) / 0.85);
+    case 'badge':
+      return ratio(state.badges[u.badge] ?? 0, u.count);
+    case 'days':
+      return ratio(adventureDayCount(state), u.count);
+    case 'camps':
+      return ratio(campsFinished(state), u.count);
+    case 'eggs':
+      return ratio(lifetimeEggs(state), u.count);
+    case 'realWorld':
+      return ratio(state.realWorldDone?.length ?? 0, u.count);
+    case 'legend': {
+      // Golden Rex: the Olympiad Crystal OR a full mock at 75% or more.
+      const mock = bestFullMock(state);
+      return state.crystals.includes('olympiad_castle') || mock >= 0.75 ? 1 : Math.min(0.95, mock / 0.75);
+    }
+  }
+}
+
+export const dinoReady = (state: AppState, d: DinoInfo) => discoveryProgress(state, d) >= 1;
+
+/** Footprints appear once the child is three-quarters of the way there. */
+export const FOOTPRINTS_AT = 0.75;
+
+/** A short, child-friendly next step towards a dino. */
+export function nextStep(state: AppState, d: DinoInfo): string {
+  const u = d.unlock;
+  const left = (have: number, need: number) => Math.max(1, need - have);
+  switch (u.kind) {
+    case 'start':
+      return '';
+    case 'skills': {
+      const n = left(u.skills.filter((id) => isMastered(state.skills[id])).length, u.count);
+      return `Master ${n} more ${u.what} skill${n > 1 ? 's' : ''}`;
+    }
+    case 'crystal':
+      return `Win the ${WORLDS.find((w) => w.id === u.world)!.crystal}`;
+    case 'badge': {
+      const n = left(state.badges[u.badge] ?? 0, u.count);
+      return u.badge === 'pattern_spotter' ? `Spot ${n} more pattern${n > 1 ? 's' : ''}` : `Keep trying on tricky questions (${n} more)`;
+    }
+    case 'days': {
+      const n = left(adventureDayCount(state), u.count);
+      return `Play on ${n} more day${n > 1 ? 's' : ''}`;
+    }
+    case 'camps': {
+      const n = left(campsFinished(state), u.count);
+      return `Finish Training Camp ${n} more time${n > 1 ? 's' : ''}`;
+    }
+    case 'eggs': {
+      const n = left(lifetimeEggs(state), u.count);
+      return `Earn ${n} more Dino Egg${n > 1 ? 's' : ''}`;
+    }
+    case 'realWorld': {
+      const n = left(state.realWorldDone?.length ?? 0, u.count);
+      return `Do ${n} more Real-World Mission${n > 1 ? 's' : ''}`;
+    }
+    case 'legend':
+      return 'Win the Olympiad Crystal, or score 75% in a full mock';
+  }
 }
 
 export const readyToHatch = (state: AppState) => DINOS.filter((d) => !state.hatched.includes(d.id) && dinoReady(state, d));
+
+/** The not-yet-found dino the child is closest to (for footprints on the map). */
+export function closestDino(state: AppState): DinoInfo | null {
+  const hidden = DINOS.filter((d) => !state.hatched.includes(d.id)).map((d) => ({ d, p: discoveryProgress(state, d) }));
+  const near = hidden.filter((x) => x.p >= FOOTPRINTS_AT && x.p < 1).sort((a, b) => b.p - a.p);
+  return near[0]?.d ?? null;
+}
 
 // ---------- analytics helpers ----------
 

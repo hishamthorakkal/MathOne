@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BADGES, COSMETICS, DINOS, HATCH_COST, WORLDS, type DinoInfo } from '../../engine/catalog';
-import { dinoReady, STAGE_INFO, STAGE_ORDER, stageIndex, stageProgress } from '../../engine/mastery';
+import { BADGES, COSMETICS, WORLDS, type DinoInfo } from '../../engine/catalog';
+import { STAGE_INFO, STAGE_ORDER, stageIndex, stageProgress } from '../../engine/mastery';
 import { hatch } from '../../engine/rewards';
 import { update, useAppState } from '../../engine/store';
 import type { BadgeId, DinoId } from '../../engine/types';
 import { Dino } from '../../components/Dino';
+import { DiscoveryBook } from '../../components/DiscoveryBook';
 import { EvolutionOverlay, GrowthMeter, growthSteps } from '../../components/Evolution';
 import { useCompanion } from '../../components/useCompanion';
 
@@ -16,6 +17,7 @@ export function Dinos() {
   const growth = stageProgress(state);
   const [hatching, setHatching] = useState<DinoInfo | null>(null);
   const [replay, setReplay] = useState(false);
+  const [factFor, setFactFor] = useState<DinoId | null>(null);
 
   const doHatch = (d: DinoInfo) => {
     let ok = false;
@@ -41,7 +43,10 @@ export function Dinos() {
           steps={[['egg', 'baby']]}
           dino={{ species: hatching.id, name: hatching.name, color: hatching.color, belly: hatching.belly }}
           messageFor={() => `Welcome to your Dino family, ${hatching.name}! 💚`}
-          onDone={() => setHatching(null)}
+          onDone={() => {
+            setFactFor(hatching.id); // show the new dino's fact card straight away
+            setHatching(null);
+          }}
         />
       )}
 
@@ -75,38 +80,7 @@ export function Dinos() {
         </div>
       </section>
 
-      <h2 className="section-title">Dino Collection</h2>
-      <div className="dino-grid">
-        {DINOS.map((d) => {
-          const owned = state.hatched.includes(d.id);
-          const ready = !owned && dinoReady(state, d);
-          return (
-            <div key={d.id} className={`dino-card ${owned ? '' : 'dino-unowned'}`}>
-              {owned ? (
-                <Dino size={110} species={d.id} color={d.color} belly={d.belly} mood="happy" stage="baby" />
-              ) : (
-                <div className={`mystery-egg ${ready ? 'egg-wobble' : ''}`}>🥚</div>
-              )}
-              <b>{owned || ready ? d.name : '???'}</b>
-              {owned ? (
-                state.companion === d.id ? (
-                  <span className="chip">My companion</span>
-                ) : (
-                  <button type="button" className="btn btn-soft" onClick={() => update((s) => void (s.companion = d.id))}>
-                    Choose
-                  </button>
-                )
-              ) : ready ? (
-                <button type="button" className="btn btn-primary" disabled={state.eggs < HATCH_COST} onClick={() => doHatch(d)}>
-                  Hatch (🥚 {HATCH_COST})
-                </button>
-              ) : (
-                <span className="small">{d.requirement}</span>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      <DiscoveryBook state={state} selected={factFor} onSelect={setFactFor} onHatch={doHatch} />
 
       <h2 className="section-title">Dino Wardrobe</h2>
       <div className="wardrobe">

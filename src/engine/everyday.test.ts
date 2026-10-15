@@ -7,7 +7,7 @@ import type { Outcome } from './types';
 
 // Simulate a child playing one mission every day from today until the Olympiad.
 describe('every day until the Olympiad', () => {
-  it('builds a valid mission each day and progresses through the worlds', () => {
+  it('builds a valid mission each day and progresses through the worlds', async () => {
     const store: Record<string, string> = {};
     vi.stubGlobal('localStorage', {
       getItem: (k: string) => store[k] ?? null,
@@ -38,6 +38,12 @@ describe('every day until the Olympiad', () => {
       report.push(`${day} P${phaseOf(day).phase} ${plan.world}${plan.boss ? ' BOSS' : ''}${plan.light ? ' LIGHT' : ''}`);
     }
     expect(buildMock('full')).toHaveLength(50);
+    // Discovery pacing: a child who plays every day should find most dinos by the Olympiad.
+    const { DINOS } = await import('./catalog');
+    const { discoveryProgress } = await import('./mastery');
+    const found = DINOS.filter((d) => discoveryProgress(state, d) >= 1).map((d) => d.name);
+    console.log('dinos discoverable:', found.length, found.join(', '));
+    expect(found.length).toBeGreaterThanOrEqual(10);
     console.log(report.join('\n'));
     console.log('crystals:', state.crystals.join(', '));
     vi.unstubAllGlobals();

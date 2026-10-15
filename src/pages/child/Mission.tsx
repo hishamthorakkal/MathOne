@@ -9,6 +9,7 @@ import {
   applyQuestion,
   logMistakes,
   completeMission,
+  markRealWorldDone,
   DAILY_CAMP_LIMIT,
   DAILY_MISSION_LIMIT,
   missionLimit,
@@ -314,6 +315,13 @@ function Summary({
       <div className={`offline ${offline.kind}`}>
         <b>{offline.kind === 'parent' ? '👨‍👩‍👧 Parent Challenge' : '🏠 Real-World Mission'}</b>
         <p>{offline.text}</p>
+        {state.realWorldDone?.includes(t) ? (
+          <p className="small">✅ Done! Archie the Archaeopteryx is getting closer… 🪶</p>
+        ) : (
+          <button type="button" className="btn btn-soft" onClick={() => update((d) => void markRealWorldDone(d, t))}>
+            ✋ I did it!
+          </button>
+        )}
       </div>
       <p className="small">{tomorrowPreview(state)}</p>
       <Link to="/" className="btn btn-primary btn-big">

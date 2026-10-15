@@ -1,4 +1,4 @@
-# Dino Discovery — design (not yet built)
+# Dino Discovery — design (built)
 
 **Goal:** give the child something to look forward to across all 45 days. They do this by **discovering** dinosaurs, and every discovery is earned by learning. There's no luck involved.
 
@@ -114,6 +114,6 @@ Roughly **one discovery every 3 days**, following the world order in the plan:
 ## 8. Decisions needed before building
 
 1. ~~18 dinos, or fewer?~~ **Decided: keep all 6 existing dinos and add all 12 new ones (18 total).**
-2. **Should Golden Rex count a full mock at 75%,** or only the castle crystal?
-3. **Is a parent tick OK for Real-World Missions** (Archie)?
-4. **Should Dino Maths answers count towards skill mastery,** or just be for fun?
+2. ~~Golden Rex unlock?~~ **Decided: the castle crystal OR a full mock at 75%.**
+3. ~~Who confirms Real-World Missions?~~ **Decided: the child taps "I did it!" (once per day).**
+4. ~~Dino Maths and mastery?~~ **Decided: just for fun (+2 stars once), no effect on skill progress.**

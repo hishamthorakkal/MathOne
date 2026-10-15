@@ -1,6 +1,6 @@
 import { HATCH_COST } from './catalog';
 import { today } from './dates';
-import { readyToHatch, recordOutcome, worldProgress } from './mastery';
+import { lifetimeEggs, readyToHatch, recordOutcome, worldProgress } from './mastery';
 import type { MissionPlan, SegmentKind } from './session';
 import type { AppState, BadgeId, DinoId, Outcome, Question, WorldId } from './types';
 
@@ -105,6 +105,7 @@ export function completeMission(
   }
   draft.stars += bonus;
   day.stars += bonus;
+  draft.eggsEarned = lifetimeEggs(draft) + eggs;
   draft.eggs += eggs;
   const newlyReady = readyToHatch(draft)
     .map((d) => d.id)
@@ -118,6 +119,7 @@ export function checkCrystals(draft: AppState): WorldId[] {
   for (const w of draft.bosses) {
     if (!draft.crystals.includes(w) && worldProgress(draft, w) >= 0.85) {
       draft.crystals.push(w);
+      draft.eggsEarned = lifetimeEggs(draft) + 3;
       draft.eggs += 3;
       won.push(w);
     }
@@ -130,6 +132,24 @@ export function hatch(draft: AppState, id: DinoId): boolean {
   if (!readyToHatch(draft).some((d) => d.id === id)) return false;
   draft.eggs -= HATCH_COST;
   draft.hatched.push(id);
+  return true;
+}
+
+/** The child says they did today's Real-World Mission (counts once per day). */
+export function markRealWorldDone(draft: AppState, date = today()): boolean {
+  const done = draft.realWorldDone ?? [];
+  if (done.includes(date)) return false;
+  draft.realWorldDone = [...done, date];
+  return true;
+}
+
+export const DINO_MATH_STARS = 2;
+
+/** Dino Maths on a fact card: just for fun, so a bonus star but no effect on skill mastery. */
+export function answerDinoMath(draft: AppState, id: DinoId, correct: boolean): boolean {
+  if (!correct || draft.factsAnswered?.includes(id)) return false;
+  draft.factsAnswered = [...(draft.factsAnswered ?? []), id];
+  draft.stars += DINO_MATH_STARS;
   return true;
 }
 

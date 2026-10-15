@@ -52,7 +52,7 @@ Content follows the IMO Class 2 syllabus and the official sample paper:
 | Mastery model (independent 1.0 / retry 0.8 / hint 0.6 / guided 0.35, recency-weighted) | `src/engine/mastery.ts` |
 | Anti-frustration (−1 level after 2 errors, +1 after 3 independent) and confidence mix | `mastery.ts`, `session.ts` |
 | Spaced-repetition revision queue → Training Camp | `mastery.ts`, `/camp` |
-| Stars + Dino Eggs only; dino collection, hatching, evolution, wardrobe, badges | `src/pages/child/Dinos.tsx`, `src/engine/rewards.ts` |
+| Stars + Dino Eggs only; 18 species-shaped dinos to discover in the Dino Discovery Book (clues, footprints at 75%, fact cards with Dino Maths), hatching, evolution, wardrobe, badges | `src/components/DiscoveryBook.tsx`, `src/components/Dino.tsx`, `src/engine/catalog.ts` |
 | Read to Me (speech synthesis) and highlighted clues | `src/components/RichText.tsx` |
 | “How did you solve it?” prompts (occasional) | `QuestionPlayer.tsx` |
 | Adventure Days (no fragile streaks), Real-World Missions, Parent Challenges | Mission summary |

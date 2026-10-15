@@ -73,6 +73,12 @@ export function Home() {
         )}
       </section>
 
+      {hatchable > 0 && (
+        <Link to="/dinos" className="new-egg-banner">
+          <span className="mystery-egg egg-wobble">🥚</span>
+          {hatchable === 1 ? 'You found a new egg! Tap to hatch it.' : `You found ${hatchable} new eggs! Tap to hatch them.`}
+        </Link>
+      )}
       <section className="wallet">
         <span>⭐ {state.stars} Stars</span>
         <span>🥚 {state.eggs} Eggs</span>
