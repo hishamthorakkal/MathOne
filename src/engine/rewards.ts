@@ -18,7 +18,7 @@ export const STARS: Record<Outcome, number> = { independent: 3, retry: 2, hint: 
 
 export const MISSION_STARS = 5;
 export const CAMP_STARS = 3;
-export const DAILY_MISSION_LIMIT = 2;
+export const DAILY_MISSION_LIMIT = 4;
 /** Most extra adventures a parent can unlock in one day (healthy-use guardrail). */
 export const MAX_EXTRA_PER_DAY = 3;
 

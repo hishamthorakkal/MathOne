@@ -165,7 +165,13 @@ function MissionRun({ plan, alreadyToday }: { plan: NonNullable<ReturnType<typeo
           </button>
         )}
         {plan.kind === 'daily' && alreadyToday >= DAILY_MISSION_LIMIT && <p className="small">🌟 Tomorrow’s adventure, unlocked early by a grown-up!</p>}
-        {plan.kind === 'daily' && alreadyToday > 0 && alreadyToday < DAILY_MISSION_LIMIT && <p className="small">Bonus adventure – the last one for today!</p>}
+        {plan.kind === 'daily' && alreadyToday > 0 && alreadyToday < DAILY_MISSION_LIMIT && (
+          <p className="small">
+            {alreadyToday === DAILY_MISSION_LIMIT - 1
+              ? 'Bonus adventure – the last one for today!'
+              : `Bonus adventure ${alreadyToday} of ${DAILY_MISSION_LIMIT - 1} for today!`}
+          </p>
+        )}
       </div>
     );
   }
